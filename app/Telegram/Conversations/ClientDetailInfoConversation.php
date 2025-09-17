@@ -2,9 +2,11 @@
 
 namespace App\Telegram\Conversations;
 
+use App\Integrations\EskizSmsClient;
 use App\Models\Client;
 use App\Models\Otp;
 use App\Telegram\Keyboards\ReplyKeyboards;
+use Illuminate\Http\Client\ConnectionException;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
@@ -21,6 +23,9 @@ class ClientDetailInfoConversation extends Conversation
         $this->next('receivePhone');
     }
 
+    /**
+     * @throws ConnectionException
+     */
     public function receivePhone(Nutgram $bot)
     {
         $phone = $bot->message()->text;
@@ -46,6 +51,7 @@ class ClientDetailInfoConversation extends Conversation
         ]);
         //for testing purpose we will send otp via bot message
         $bot->sendMessage(__('telegram.otp.your_code', ['code' => $otp]));
+        (new EskizSmsClient())->send($phone, $otp);
         $this->askOtp($bot);
     }
 

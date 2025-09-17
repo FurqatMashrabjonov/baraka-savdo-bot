@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Http;
 class EskizSmsClient
 {
     private string $token;
-    private string $baseUrl = 'https://notify.eskiz.uz/api/';
-
+    private string $baseUrl;
+    private string $email;
+    private string $password;
     /**
      * @throws ConnectionException
      */
-    public function __construct(
-        private readonly string $email,
-        private readonly string $password,
-        private readonly string $sender,
-        private readonly int    $tokenLifetime = 3600, // 1 soat default
-    ) {
+    public function __construct() {
+        $this->baseUrl = config('eskiz.api_url');
+        $this->email = config('eskiz.email');
+        $this->password = config('eskiz.password');
+
         $this->token = $this->getToken();
     }
 
@@ -30,8 +30,8 @@ class EskizSmsClient
      */
     private function getToken(): string
     {
-        return Cache::remember('eskiz_token', $this->tokenLifetime, function () {
-            $response = Http::post($this->baseUrl . 'auth/login', [
+        return Cache::remember('eskiz_token', config('eskiz.token_lifetime'), function () {
+            $response = Http::post($this->baseUrl . '/auth/login', [
                 'email'    => $this->email,
                 'password' => $this->password,
             ])->throw();
@@ -43,13 +43,25 @@ class EskizSmsClient
     /**
      * SMS yuborish
      */
-    public function send(string $number, string $text): array
+    public function send(string $number, int $code): array
     {
-        return $this->request('message/sms/send', 'post', [
+        return $this->request('/message/sms/send', 'post', [
             'mobile_phone' => $number,
-            'message'      => $text,
-            'from'         => $this->sender,
+            'message'      => $this->generateMessage($code),
+            'from'         => config('eskiz.from'),
         ]);
+    }
+
+    private function generateMessage(int $code): string
+    {
+        return str_replace('%d', (string)$code, config('eskiz.eskiz_template'));
+    }
+
+    private function normalizeMessage(string $message): string
+    {
+        return $this->request('/message/sms/normalizer', 'post', [
+            'message' => $message,
+        ])['message'];
     }
 
     /**
@@ -57,7 +69,7 @@ class EskizSmsClient
      */
     public function about(): array
     {
-        return $this->request('auth/user');
+        return $this->request('/auth/user');
     }
 
     /**
@@ -65,7 +77,7 @@ class EskizSmsClient
      */
     public function limits(): array
     {
-        return $this->request('user/get-limit');
+        return $this->request('/user/get-limit');
     }
 
     /**
@@ -74,6 +86,7 @@ class EskizSmsClient
     private function request(string $endpoint, string $method = 'get', array $data = []): array
     {
         $response = Http::withToken($this->token)
+            ->asForm()
             ->baseUrl($this->baseUrl)
             ->$method($endpoint, $data);
 
