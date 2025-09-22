@@ -29,4 +29,11 @@ class ReplyKeyboards
             KeyboardButton::make(__('telegram.feedback')),
         );
     }
+
+    public static function backToHome()
+    {
+        return ReplyKeyboardMarkup::make(resize_keyboard: true)->addRow(
+            KeyboardButton::make(__('telegram.back_to_home')),
+        );
+    }
 }

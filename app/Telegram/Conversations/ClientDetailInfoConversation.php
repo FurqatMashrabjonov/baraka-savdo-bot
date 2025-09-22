@@ -2,56 +2,61 @@
 
 namespace App\Telegram\Conversations;
 
-use App\Integrations\EskizSmsClient;
-use App\Models\Client;
-use App\Models\Otp;
+use App\Services\TelegramAuthService;
 use App\Telegram\Keyboards\ReplyKeyboards;
-use Illuminate\Http\Client\ConnectionException;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class ClientDetailInfoConversation extends Conversation
 {
-    public function start(Nutgram $bot, bool $is_wrong_number_entry = false)
+    private function authService(): TelegramAuthService
     {
-        if ($is_wrong_number_entry) {
-            $bot->sendMessage(__('telegram.phone.wrong'));
-        } else {
-            $bot->sendMessage(__('telegram.phone.enter'));
-        }
+        return app(TelegramAuthService::class);
+    }
+
+    public function start(Nutgram $bot, bool $isWrongNumberEntry = false)
+    {
+        $message = $isWrongNumberEntry ? __('telegram.phone.wrong') : __('telegram.phone.enter');
+
+        $bot->sendMessage(
+            text: $message,
+            parse_mode: ParseMode::HTML
+        );
         $this->next('receivePhone');
     }
 
-    /**
-     * @throws ConnectionException
-     */
     public function receivePhone(Nutgram $bot)
     {
         $phone = $bot->message()->text;
-        if (!preg_match('/^\d{9}$/', $phone)) {
+
+        // Debug logging
+        logger()->info('Received phone number', ['phone' => $phone, 'chat_id' => $bot->chatId()]);
+
+        if (! $this->authService()->isValidPhoneFormat($phone)) {
+            logger()->info('Invalid phone format', ['phone' => $phone]);
             $this->start($bot, true);
+
             return;
         }
 
-        Client::query()->updateOrCreate([
-            'chat_id' => $bot->chatId(),
-        ], [
-           'phone' => $phone
-        ]);
+        logger()->info('Phone format valid, creating client');
 
-        //generate opt and send it via EskizClient and save it to session
-        $otp = rand(1000, 9999);
+        // Get or create client with this phone
+        $client = $this->authService()->getOrCreateClient($phone);
+        logger()->info('Client created/found', ['client_id' => $client->id]);
 
-        Otp::query()->create([
-            'phone' => $phone,
-            'code' => $otp,
-            'attempts' => 0,
-            'expires_at' => now()->addMinutes(5),
-        ]);
-        //for testing purpose we will send otp via bot message
-        $bot->sendMessage(__('telegram.otp.your_code', ['code' => $otp]));
-        (new EskizSmsClient())->send($phone, $otp);
+        // Link current telegram account to this client
+        $this->authService()->linkTelegramAccountToClient($bot->chatId(), $client);
+        logger()->info('Telegram account linked to client');
+
+        // Send OTP and get the code
+        $otpCode = $this->authService()->sendOtp($phone);
+        logger()->info('OTP generated', ['code' => $otpCode]);
+
+        // Send OTP code via Telegram for testing
+        $bot->sendMessage("🔐 Tasdiqlash kodi: {$otpCode}\n\nIltimos, ushbu kodni kiriting:");
+
         $this->askOtp($bot);
     }
 
@@ -64,38 +69,31 @@ class ClientDetailInfoConversation extends Conversation
     public function receiveOtp(Nutgram $bot)
     {
         $otp = $bot->message()->text;
+        $client = $this->authService()->getClientByChatId($bot->chatId());
 
-        if (!preg_match('/^\d{4}$/', $otp)) {
-            $bot->sendMessage(__('telegram.otp.wrong'));
-            $this->next('receiveOtp');
-            return;
-        }
-
-        $phone = Client::query()->where('chat_id', $bot->chatId())->value('phone');
-        if (!$phone) {
+        if (! $client) {
             $this->start($bot, true);
+
             return;
         }
 
-        $otpEntry = Otp::query()
-            ->where('code', $otp)
-            ->where('phone', $phone)
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if (!$otpEntry) {
+        if (! $this->authService()->verifyOtp($client->phone, $otp)) {
             $bot->sendMessage(__('telegram.otp.wrong'));
             $this->next('receiveOtp');
+
             return;
         }
 
-        if ($otpEntry->expires_at < now()) {
-            $bot->sendMessage(__('telegram.otp.expired'));
-            $this->next('receivePhone');
+        // Check if user is already complete
+        if ($client->isComplete()) {
+            $this->end();
+            $bot->sendMessage(
+                text: __('telegram.greeting'),
+                reply_markup: ReplyKeyboards::home()
+            );
+
             return;
         }
-
-        $otpEntry->delete();
 
         $this->askFullName($bot);
     }
@@ -111,17 +109,17 @@ class ClientDetailInfoConversation extends Conversation
 
     public function receiveFullName(Nutgram $bot)
     {
-        $full_name = $bot->message()->text;
-        //make pattern letters also kirillic
-        if (!preg_match('/^[a-zA-ZА-яёЁ\s]+$/u', $full_name)) {
+        $fullName = $bot->message()->text;
+
+        if (! $this->authService()->isValidFullNameFormat($fullName)) {
             $bot->sendMessage(__('telegram.full_name.wrong'));
-            $this->next('askFullName');
+            $this->next('receiveFullName');
+
             return;
         }
 
-        Client::query()->where('chat_id', $bot->chatId())->update([
-            'full_name' => $full_name
-        ]);
+        $client = $this->authService()->getClientByChatId($bot->chatId());
+        $client->update(['full_name' => $fullName]);
 
         $this->askAddress($bot);
     }
@@ -132,7 +130,6 @@ class ClientDetailInfoConversation extends Conversation
             text: __('telegram.address.enter'),
             parse_mode: ParseMode::HTML
         );
-
         $this->next('receiveAddress');
     }
 
@@ -140,23 +137,20 @@ class ClientDetailInfoConversation extends Conversation
     {
         $address = $bot->message()->text;
 
-        Client::query()->where('chat_id', $bot->chatId())->update([
-            'address' => $address
-        ]);
-
-        $client = Client::query()->where('chat_id', $bot->chatId())->first();
+        $client = $this->authService()->getClientByChatId($bot->chatId());
+        $client->update(['address' => $address]);
 
         $bot->sendMessage(
-            __('telegram.registration.success') . "\n\n"
-            . "<blockquote>"
-            . __('telegram.registration.details', [
+            __('telegram.registration.success')."\n\n"
+            .'<blockquote>'
+            .__('telegram.registration.details', [
                 'id' => $client->id,
                 'name' => $client->full_name,
                 'phone' => $client->phone,
                 'address' => $client->address,
                 'date' => $client->created_at->format('d.m.Y H:i'),
-            ]) .
-            "</blockquote>",
+            ]).
+            '</blockquote>',
             parse_mode: ParseMode::HTML,
             reply_markup: ReplyKeyboards::home()
         );

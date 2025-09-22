@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
@@ -10,19 +12,14 @@ class Client extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'chat_id',
-        'phone',
         'full_name',
-        'address',
+        'phone',
+        'telegram_id',
+        'telegram_username',
     ];
 
-    public function telegramAccount()
+    public function parcels(): HasMany
     {
-        return $this->hasOne(TelegramAccount::class, 'chat_id', 'chat_id');
-    }
-
-    public function telegram()
-    {
-        return $this->hasOne(TelegramAccount::class, 'chat_id', 'chat_id');
+        return $this->hasMany(Parcel::class);
     }
 }

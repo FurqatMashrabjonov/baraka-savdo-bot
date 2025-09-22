@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/furqat/Library/Application Support/Herd/bin/php84",
+            "args": [
+                "/Users/furqat/Herd/post-bot/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

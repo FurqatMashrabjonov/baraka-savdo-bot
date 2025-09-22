@@ -4,6 +4,7 @@ namespace App\Telegram\Conversations;
 
 use App\Models\TelegramAccount;
 use App\Telegram\Keyboards\InlineKeyboards;
+use App\Telegram\Keyboards\ReplyKeyboards;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
@@ -14,7 +15,7 @@ class JoinChannelConversation extends Conversation
 
     public function __construct()
     {
-        $this->channel = '@' . config('telegram.channel_username');
+        $this->channel = '@'.config('telegram.channel_username');
     }
 
     /**
@@ -28,6 +29,12 @@ class JoinChannelConversation extends Conversation
 
     public function checkJoined(Nutgram $bot): void
     {
+        if ($bot->callbackQuery() == null) {
+            $this->next('checkJoined');
+
+            return;
+        }
+
         if ($bot->callbackQuery()?->data !== 'check_joined') {
             return;
         }
@@ -39,22 +46,47 @@ class JoinChannelConversation extends Conversation
         if (in_array($status, ['member', 'administrator', 'creator'])) {
             $this->markUserAsJoined($userId);
             $this->cleanUpMessage($bot);
-            $this->end();
 
-            if (is_null($this->getUser($userId)->lang)) {
-                AskLanguageConversation::begin($bot);
+            // Check if user is already completely registered
+            if ($this->isUserLoggedIn($bot)) {
+                $bot->sendMessage(
+                    text: __('telegram.greeting'),
+                    reply_markup: ReplyKeyboards::home()
+                );
+                $this->end(); // End conversation properly
+
+                return;
             }
+
+            // User joined channel but not fully registered
+            $telegramAccount = $this->getUser($userId);
+            if (! $this->isUserLoggedIn($bot)) {
+                $this->end(); // End current conversation before starting new one
+                ClientDetailInfoConversation::begin($bot);
+
+                return;
+            }
+            // Check if user needs language selection
+            $telegramAccount = $this->getUser($userId);
+            if (is_null($telegramAccount->lang)) {
+                $this->end();
+                AskLanguageConversation::begin($bot);
+
+                return;
+            }
+            // RegistrationFlowMiddleware will handle phone/name/address flow automatically
+
         } else {
             $this->sendJoinMessage(
                 $bot,
-                '❌ Siz kanalga obuna bo\'lmagansiz. Iltimos, obuna bo‘ling va keyin "Tasdiqlash" tugmasini bosing.'
+                __('telegram.not_joined')
             );
         }
     }
 
-    protected function sendJoinMessage(Nutgram $bot, string $text = null): void
+    protected function sendJoinMessage(Nutgram $bot, ?string $text = null): void
     {
-        $text ??= '👋 Assalom alaykum! Botdan foydalanish uchun iltimos kanalimizga obuna bo‘ling!';
+        $text ??= __('telegram.must_join');
         $bot->sendMessage(text: $text, reply_markup: InlineKeyboards::joinChannel());
     }
 
@@ -64,6 +96,14 @@ class JoinChannelConversation extends Conversation
             ['chat_id' => $userId],
             ['channel_joined_at' => now()]
         );
+    }
+
+    protected function isUserLoggedIn($bot): bool
+    {
+        $authService = app(\App\Services\TelegramAuthService::class);
+        $client = $authService->getClientByChatId($bot->chatId());
+
+        return $client && $client->isComplete();
     }
 
     protected function cleanUpMessage(Nutgram $bot): void
