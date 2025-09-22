@@ -44,7 +44,7 @@ class ParcelsTable
 
                 BadgeColumn::make('status')
                     ->label('Holati')
-                    ->formatStateUsing(fn (ParcelStatus $state) => $state->label())
+                    ->formatStateUsing(fn (ParcelStatus $state) => $state->getLabel())
                     ->colors([
                         'gray' => ParcelStatus::CREATED->value,
                         'info' => ParcelStatus::ARRIVED_CHINA->value,

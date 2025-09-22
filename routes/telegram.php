@@ -6,6 +6,7 @@ use App\Telegram\Commands\StartCommand;
 use App\Telegram\Conversations\AskLanguageConversation;
 use App\Telegram\Conversations\ClientDetailInfoConversation;
 use App\Telegram\Conversations\FeedbackConversation;
+use App\Telegram\Conversations\OrderPaymentConversation;
 use App\Telegram\Conversations\ProfileConversation;
 use App\Telegram\Conversations\TrackNumberConversation;
 use App\Telegram\Middleware\CheckChannelSubscription;
@@ -52,6 +53,11 @@ $bot->onText('^('.implode('|', array_map('preg_quote', lang_all('telegram.profil
 // Track number button handler
 $bot->onText('^('.implode('|', array_map('preg_quote', lang_all('telegram.track_number'))).')$', function (Nutgram $bot) {
     TrackNumberConversation::begin($bot);
+});
+
+// Order payment button handler - show all parcels
+$bot->onText('^('.implode('|', array_map('preg_quote', lang_all('telegram.order_payment'))).')$', function (Nutgram $bot) {
+    OrderPaymentConversation::begin($bot);
 });
 
 // Feedback button handler

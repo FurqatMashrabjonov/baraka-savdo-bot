@@ -65,28 +65,53 @@ class TrackNumberConversation extends Conversation
             return;
         }
 
-        // Check if track number already exists for this client
-        $existingParcel = Parcel::where('track_number', $trackNumber)
-            ->where('client_id', $client->id)
-            ->first();
+        // Check if track number already exists globally (unique constraint)
+        $existingParcel = Parcel::where('track_number', $trackNumber)->first();
 
         if ($existingParcel) {
-            $this->showParcelStatus($bot, $existingParcel);
+            // If parcel has no client assigned, assign it to current client
+            if (is_null($existingParcel->client_id)) {
+                $existingParcel->update(['client_id' => $client->id]);
+
+                $bot->sendMessage(
+                    text: __('telegram.track_number_texts.order_created', ['track_number' => $trackNumber]),
+                    parse_mode: ParseMode::HTML,
+                    reply_markup: ReplyKeyboards::home()
+                );
+            }
+            // If parcel belongs to current client, show already exists message
+            elseif ($existingParcel->client_id === $client->id) {
+                $bot->sendMessage(
+                    text: __('telegram.track_number_texts.already_exists'),
+                    parse_mode: ParseMode::HTML,
+                    reply_markup: ReplyKeyboards::home()
+                );
+            } else {
+                // If parcel belongs to another client, show error message
+                $bot->sendMessage(
+                    text: __('telegram.track_number_texts.taken'),
+                    parse_mode: ParseMode::HTML,
+                    reply_markup: ReplyKeyboards::home()
+                );
+            }
+            $this->end();
 
             return;
         }
 
-        // Create or find parcel and assign to client
-        $parcel = Parcel::findOrCreateByTrackNumber($trackNumber, $client->id);
+        // Create new parcel and assign to client
+        $parcel = Parcel::create([
+            'track_number' => $trackNumber,
+            'client_id' => $client->id,
+            'status' => \App\Enums\ParcelStatus::CREATED,
+        ]);
 
         $bot->sendMessage(
-            text: __('telegram.track_number_texts.saved', ['track_number' => $trackNumber]),
+            text: __('telegram.track_number_texts.order_created', ['track_number' => $trackNumber]),
             parse_mode: ParseMode::HTML,
             reply_markup: ReplyKeyboards::home()
         );
 
-        // Show current status
-        $this->showParcelStatus($bot, $parcel);
         $this->end();
     }
 
@@ -95,38 +120,5 @@ class TrackNumberConversation extends Conversation
         // Basic track number validation
         // Adjust this regex based on your track number format requirements
         return preg_match('/^[A-Z0-9]{8,20}$/', strtoupper($trackNumber));
-    }
-
-    private function showParcelStatus(Nutgram $bot, Parcel $parcel): void
-    {
-        $progressSteps = $parcel->getProgressSteps();
-        $statusText = "📦 <b>Trek raqam:</b> {$parcel->track_number}\n";
-        $statusText .= "📊 <b>Holati:</b> {$parcel->getStatusLabel()}\n\n";
-
-        if ($parcel->weight) {
-            $statusText .= "⚖️ <b>Og'irligi:</b> {$parcel->weight} kg\n";
-        }
-
-        if ($parcel->is_banned) {
-            $statusText .= "⚠️ <b>Diqqat:</b> Ushbu buyum taqiqlangan\n";
-        }
-
-        $statusText .= "\n<b>Yetkazib berish jarayoni:</b>\n";
-
-        foreach ($progressSteps as $step) {
-            $icon = $step['completed'] ? '✅' : '⏳';
-            $statusText .= "{$icon} {$step['label']}";
-
-            if ($step['date']) {
-                $statusText .= " - {$step['date']->format('d.m.Y H:i')}";
-            }
-
-            $statusText .= "\n";
-        }
-
-        $bot->sendMessage(
-            text: $statusText,
-            parse_mode: ParseMode::HTML
-        );
     }
 }

@@ -56,9 +56,25 @@ Namuna: <i><u>Toshkent shahri Mirzo Ulug\'bek tumani Istiqlol ko\'chasi 32-uy</u
     'back_to_home' => '⬅️ Asosiy sahifaga qaytish',
     'back_to_home_message' => 'Siz asosiy sahifaga qaytdingiz, kerakli bo\'limni tanlang.',
     'track_number_texts' => [
-        'enter' => 'Trek raqamingizni kiriting.\nMasalan: <i><u>CN123456789US</u></i>',
-        'wrong' => 'Noto\'g\'ri trek raqam formati! Trek raqam 8-20 ta harf va raqamdan iborat bo\'lishi kerak.\nMasalan: <i><u>CN123456789US</u></i>',
+        'enter' => 'Trek raqamingizni kiriting.
+Masalan: <i><u>CN123456789US</u></i>',
+        'wrong' => 'Noto\'g\'ri trek raqam formati! Trek raqam 8-20 ta harf va raqamdan iborat bo\'lishi kerak.
+Masalan: <i><u>CN123456789US</u></i>',
         'saved' => '✅ Trek raqam <b>:track_number</b> muvaffaqiyatli saqlandi!',
         'already_exists' => 'Bu trek raqam allaqachon mavjud. Quyida uning holati ko\'rsatilgan:',
+        'order_created' => 'Buyurtma muvaffaqiyatli yaratildi! Trek raqami: :track_number',
+        'taken' => 'Bu trek raqam boshqa foydalanuvchi tomonidan ro\'yxatdan o\'tkazilgan.',
+    ],
+    'no_parcels' => 'Sizda hali posilkalar yo\'q.',
+    'your_parcels' => '📦 Sizning posilkalaringiz:',
+    'track_number_label' => 'Trek raqami',
+    'weight_label' => 'Og\'irligi',
+    'delivery_cost_label' => 'Yetkazib berish narxi',
+    'status_label' => 'Holati',
+    'parcel_statuses' => [
+        'created' => 'Yaratildi',
+        'arrived_china' => 'Xitoyga yetib keldi',
+        'arrived_uzb' => 'O\'zbekistonga yetib keldi',
+        'delivered' => 'Yetkazib berildi',
     ],
 ];

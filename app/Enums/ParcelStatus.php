@@ -9,13 +9,24 @@ enum ParcelStatus: string
     case ARRIVED_UZB = 'arrived_uzb';
     case DELIVERED = 'delivered';
 
+
+    public function getLabel(?string $locale = null): string
+    {
+        return __("telegram.parcel_statuses.{$this->value}");
+    }
+
     public function label(): string
     {
+        return $this->getLabel();
+    }
+
+    public function getColor(): string
+    {
         return match ($this) {
-            self::CREATED => 'Yaratilgan',
-            self::ARRIVED_CHINA => 'Xitoyga kelgan',
-            self::ARRIVED_UZB => 'O\'zbekistonga kelgan',
-            self::DELIVERED => 'Yetkazilgan',
+            self::CREATED => 'gray',
+            self::ARRIVED_CHINA => 'info',
+            self::ARRIVED_UZB => 'warning',
+            self::DELIVERED => 'success',
         };
     }
 }

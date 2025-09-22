@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Parcel extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'track_number',
         'client_id',
@@ -51,4 +49,55 @@ class Parcel extends Model
 
         return number_format($ceiledWeight, 1) . ' KG';
     }
+
+    public static function findOrCreateByTrackNumber(string $trackNumber, ?int $clientId = null): self
+    {
+        $attributes = ['track_number' => $trackNumber];
+
+        if ($clientId) {
+            $attributes['client_id'] = $clientId;
+        }
+
+        return self::firstOrCreate(['track_number' => $trackNumber], $attributes);
+    }
+
+    public function getStatusLabel(): string
+    {
+        return $this->status->getLabel();
+    }
+
+    public function getProgressSteps(): array
+    {
+        return [
+            [
+                'name' => 'Yaratildi',
+                'status' => ParcelStatus::CREATED,
+                'completed' => $this->status->value >= ParcelStatus::CREATED->value,
+                'label' => 'Yaratildi',
+                'date' => $this->created_at,
+            ],
+            [
+                'name' => 'Xitoyga yetib keldi',
+                'status' => ParcelStatus::ARRIVED_CHINA,
+                'completed' => $this->status->value >= ParcelStatus::ARRIVED_CHINA->value,
+                'label' => 'Xitoyga yetib keldi',
+                'date' => $this->china_uploaded_at,
+            ],
+            [
+                'name' => 'O\'zbekistonga yetib keldi',
+                'status' => ParcelStatus::ARRIVED_UZB,
+                'completed' => $this->status->value >= ParcelStatus::ARRIVED_UZB->value,
+                'label' => 'O\'zbekistonga yetib keldi',
+                'date' => $this->uzb_uploaded_at,
+            ],
+            [
+                'name' => 'Yetkazib berildi',
+                'status' => ParcelStatus::DELIVERED,
+                'completed' => $this->status->value >= ParcelStatus::DELIVERED->value,
+                'label' => 'Yetkazib berildi',
+                'date' => $this->status === ParcelStatus::DELIVERED ? $this->updated_at : null,
+            ],
+        ];
+    }
+
 }

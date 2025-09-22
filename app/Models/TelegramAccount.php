@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TelegramAccount extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'chat_id',
@@ -25,8 +25,6 @@ class TelegramAccount extends Model
     {
         return [
             'channel_joined_at' => 'datetime',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
         ];
     }
 
@@ -35,23 +33,22 @@ class TelegramAccount extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function feedback(): HasMany
-    {
-        return $this->hasMany(Feedback::class);
-    }
-
-    public function scopeChatId($query, string $chatId)
-    {
-        return $query->where('chat_id', $chatId);
-    }
-
+    /**
+     * Find telegram account by chat ID
+     */
     public static function findByChatId(string $chatId): ?self
     {
         return static::where('chat_id', $chatId)->first();
     }
 
-    public function hasClient(): bool
+    /**
+     * Create or update telegram account by chat ID
+     */
+    public static function updateOrCreateByChatId(string $chatId, array $data): self
     {
-        return ! is_null($this->client_id) && $this->client()->exists();
+        return static::updateOrCreate(
+            ['chat_id' => $chatId],
+            $data
+        );
     }
 }
