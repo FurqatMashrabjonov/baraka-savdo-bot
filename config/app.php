@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -53,6 +52,19 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ngrok URL
+    |--------------------------------------------------------------------------
+    |
+    | This value is the ngrok URL for development/testing purposes when using
+    | ngrok to expose the local application. This will be used as the base URL
+    | for Telegram Web App if configured.
+    |
+    */
+
+    'ngrok_url' => env('APP_NGROK_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +134,4 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
 ];

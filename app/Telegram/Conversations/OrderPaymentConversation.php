@@ -7,6 +7,9 @@ use App\Telegram\Keyboards\ReplyKeyboards;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use SergiX44\Nutgram\Telegram\Types\WebApp\WebAppInfo;
 
 class OrderPaymentConversation extends Conversation
 {
@@ -48,10 +51,23 @@ class OrderPaymentConversation extends Conversation
             $message .= "📊 <b>" . __('telegram.status_label') . ":</b> {$parcel->getStatusLabel()}\n\n";
         }
 
+        // Determine the base URL - use ngrok URL if available, otherwise use app URL
+        $baseUrl = config('app.ngrok_url') ?: config('app.url');
+        $webAppUrl = $baseUrl . '/telegram-web-app/dashboard?uid=' . $client->uid;
+
+        // Create inline keyboard with Web App button
+        $inlineKeyboard = InlineKeyboardMarkup::make()
+            ->addRow(
+                InlineKeyboardButton::make(
+                    text: __('telegram.open_web_app'),
+                    web_app: WebAppInfo::make(url: $webAppUrl)
+                )
+            );
+
         $bot->sendMessage(
             text: trim($message),
             parse_mode: ParseMode::HTML,
-            reply_markup: ReplyKeyboards::home()
+            reply_markup: $inlineKeyboard
         );
 
         $this->end();

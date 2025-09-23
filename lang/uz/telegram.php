@@ -8,6 +8,7 @@ return [
     'unknown_command' => 'Noma\'lum buyruq, iltimos qayta urinib ko\'ring!',
     'track_number' => '🚚 Trek raqam kiritish',
     'order_payment' => "📦 To'lov | Buyurtma",
+    'open_web_app' => '🌐 Veb-ilovani ochish',
     'delivery_address' => '🚩 Yetkaz berish manzili',
     'china_address' => '🇨🇳 Xitoy manzilimiz',
     'call_center' => '📞 Call center',

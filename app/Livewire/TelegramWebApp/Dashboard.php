@@ -103,6 +103,11 @@ class Dashboard extends Component
         return count($this->selectedParcels) * 6;
     }
 
+    public function redirectTo($link)
+    {
+        return redirect($link);
+    }
+
     public function render()
     {
         return view('livewire.telegram-web-app.dashboard');

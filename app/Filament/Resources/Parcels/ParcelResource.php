@@ -12,12 +12,23 @@ class ParcelResource extends Resource
 {
     protected static ?string $model = Parcel::class;
 
-    protected static ?string $navigationLabel = 'Pochtalar';
+    protected static ?string $navigationLabel = null;
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.parcels');
+    }
     protected static string|null|\BackedEnum $navigationIcon = Heroicon::OutlinedArchiveBox;
 
-    protected static ?string $pluralModelLabel = 'Pochtalar';
-
-    protected static ?string $modelLabel = 'Pochta';
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.parcels');
+    }
+    
+    public static function getModelLabel(): string
+    {
+        return __('filament.parcel');
+    }
 
     public static function getNavigationBadge(): ?string
     {

@@ -28,22 +28,22 @@ class ParcelsTable
                     ->sortable(),
 
                 TextColumn::make('client.full_name')
-                    ->label('Mijoz')
+                    ->label(__('filament.client_name'))
                     ->searchable()
-                    ->placeholder('Tayinlanmagan')
+                    ->placeholder(__('filament.unassigned'))
                     ->formatStateUsing(fn ($record) => $record->client
                             ? $record->client->full_name.' ('.$record->client->phone.')'
-                            : 'Tayinlanmagan'
+                            : __('filament.unassigned')
                     ),
 
                 TextColumn::make('track_number')
-                    ->label('Trek raqami')
+                    ->label(__('filament.track_number'))
                     ->searchable()
                     ->copyable()
-                    ->copyMessage('Trek raqami nusxalandi'),
+                    ->copyMessage(__('filament.track_number_copied')),
 
                 BadgeColumn::make('status')
-                    ->label('Holati')
+                    ->label(__('filament.status'))
                     ->formatStateUsing(fn (ParcelStatus $state) => $state->getLabel())
                     ->colors([
                         'gray' => ParcelStatus::CREATED->value,
@@ -53,12 +53,12 @@ class ParcelsTable
                     ]),
 
                 TextColumn::make('weight')
-                    ->label('Og\'irligi (kg)')
+                    ->label(__('filament.weight'))
                     ->numeric(decimalPlaces: 3)
-                    ->placeholder('—'),
+                    ->placeholder(__('filament.not_set')),
 
                 IconColumn::make('is_banned')
-                    ->label('Ta\'qiqlangan')
+                    ->label(__('filament.is_banned'))
                     ->boolean()
                     ->trueIcon('heroicon-o-x-circle')
                     ->falseIcon('heroicon-o-check-circle')
@@ -66,46 +66,46 @@ class ParcelsTable
                     ->falseColor('success'),
 
                 TextColumn::make('china_uploaded_at')
-                    ->label('Xitoyga kelgan vaqti')
+                    ->label(__('filament.china_uploaded_at'))
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder(__('filament.not_set')),
 
                 TextColumn::make('uzb_uploaded_at')
-                    ->label('O\'zbekistonga kelgan vaqti')
+                    ->label(__('filament.uzb_uploaded_at'))
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder(__('filament.not_set')),
 
                 TextColumn::make('created_at')
-                    ->label('Yaratilgan')
+                    ->label(__('filament.created_at'))
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Holati')
+                    ->label(__('filament.filter_status'))
                     ->options([
-                        ParcelStatus::CREATED->value => 'Yaratilgan',
-                        ParcelStatus::ARRIVED_CHINA->value => 'Xitoyga kelgan',
-                        ParcelStatus::ARRIVED_UZB->value => 'O\'zbekistonga kelgan',
-                        ParcelStatus::DELIVERED->value => 'Yetkazilgan',
+                        ParcelStatus::CREATED->value => __('filament.status_created'),
+                        ParcelStatus::ARRIVED_CHINA->value => __('filament.status_arrived_china'),
+                        ParcelStatus::ARRIVED_UZB->value => __('filament.status_arrived_uzb'),
+                        ParcelStatus::DELIVERED->value => __('filament.status_delivered'),
                     ])
                     ->multiple(),
 
                 Filter::make('unassigned')
-                    ->label('Tayinlanmagan mijozlar')
+                    ->label(__('filament.filter_unassigned'))
                     ->query(fn (Builder $query) => $query->whereNull('client_id'))
                     ->toggle(),
 
                 Filter::make('banned')
-                    ->label('Taqiqlangan tovarlar')
+                    ->label(__('filament.filter_banned'))
                     ->query(fn (Builder $query) => $query->where('is_banned', true))
                     ->toggle(),
 
                 Filter::make('older_than_3_days')
-                    ->label('3 kundan oshganlar')
+                    ->label(__('filament.filter_older_than_3_days'))
                     ->query(fn (Builder $query) => $query
                         ->whereNotNull('client_id') // Client has entered track number
                         ->where('created_at', '<', now()->subDays(3)) // More than 3 days ago
@@ -121,78 +121,78 @@ class ParcelsTable
             ])
             ->headerActions([
                 Action::make('import_china')
-                    ->label('Import from China')
+                    ->label(__('filament.import_china'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('info')
                     ->visible(fn () => auth()->user()->canImportFromChina())
                     ->form([
                         FileUpload::make('china_excel_file')
-                            ->label('Excel fayli (Xitoy)')
+                            ->label(__('filament.china_excel_file'))
                             ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])
                             ->required()
-                            ->helperText('Excel fayli: track_number, weight(KG), is_banned ustunlari bo\'lishi kerak'),
+                            ->helperText(__('filament.china_excel_help')),
                     ])
                     ->action(function (array $data) {
                         $importService = app(\App\Services\ParcelImportService::class);
 
                         try {
-                            $filePath = storage_path('app/private/' . $data['china_excel_file']);
+                            $filePath = storage_path('app/private/'.$data['china_excel_file']);
                             $result = $importService->importChinaExcel($filePath);
 
                             $summary = $importService->getImportSummary($result, 'china');
 
                             Notification::make()
-                                ->title('Xitoy Excel fayli muvaffaqiyatli import qilindi!')
+                                ->title(__('filament.import_success_china'))
                                 ->body($summary)
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
                             Notification::make()
-                                ->title('Import xatoligi')
+                                ->title(__('filament.import_error'))
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
                         }
                     })
-                    ->modalSubmitActionLabel('Import qilish')
-                    ->modalHeading('Xitoydan Excel import qilish'),
+                    ->modalSubmitActionLabel(__('filament.import_action'))
+                    ->modalHeading(__('filament.import_china_modal_title')),
 
                 Action::make('import_uzb')
-                    ->label('Import from Uzbekistan')
+                    ->label(__('filament.import_uzbekistan'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('warning')
                     ->visible(fn () => auth()->user()->canImportFromUzbekistan())
                     ->form([
                         FileUpload::make('uzb_excel_file')
-                            ->label('Excel fayli (O\'zbekiston)')
+                            ->label(__('filament.uzbekistan_excel_file'))
                             ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])
                             ->required()
-                            ->helperText('Excel fayli: track_number ustuni bo\'lishi kerak'),
+                            ->helperText(__('filament.uzbekistan_excel_help')),
                     ])
                     ->action(function (array $data) {
                         $importService = app(\App\Services\ParcelImportService::class);
 
                         try {
-                            $filePath = storage_path('app/private/' . $data['uzb_excel_file']);
+                            $filePath = storage_path('app/private/'.$data['uzb_excel_file']);
                             $result = $importService->importUzbekistanExcel($filePath);
 
                             $summary = $importService->getImportSummary($result, 'uzbekistan');
 
                             Notification::make()
-                                ->title('O\'zbekiston Excel fayli muvaffaqiyatli import qilindi!')
+                                ->title(__('filament.import_success_uzbekistan'))
                                 ->body($summary)
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
                             Notification::make()
-                                ->title('Import xatoligi')
+                                ->title(__('filament.import_error'))
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
                         }
                     })
-                    ->modalSubmitActionLabel('Import qilish')
-                    ->modalHeading('O\'zbekistondan Excel import qilish'),
+                    ->modalSubmitActionLabel(__('filament.import_action'))
+                    ->modalHeading(__('filament.import_uzbekistan_modal_title')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Parcel;
-use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -11,11 +10,14 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentParcelsWidget extends BaseWidget
 {
-    protected static ?string $heading = 'So\'nggi posilkalar';
+    protected static ?int $sort = 4;
 
-    protected static ?int $sort = 6;
+    protected int|string|array $columnSpan = 'full';
 
-    protected int | string | array $columnSpan = 'full';
+    public function getHeading(): string
+    {
+        return __('filament.recent_parcels_title');
+    }
 
     public function table(Table $table): Table
     {
@@ -28,25 +30,25 @@ class RecentParcelsWidget extends BaseWidget
             )
             ->columns([
                 TextColumn::make('track_number')
-                    ->label('Trek raqami')
+                    ->label(__('filament.track_number'))
                     ->searchable()
                     ->copyable(),
 
                 TextColumn::make('client.full_name')
-                    ->label('Mijoz')
-                    ->placeholder('Tayinlanmagan')
+                    ->label(__('filament.client'))
+                    ->placeholder(__('filament.unassigned'))
                     ->formatStateUsing(fn ($record) => $record->client
-                        ? $record->client->full_name . ' (' . $record->client->phone . ')'
-                        : 'Tayinlanmagan'
+                        ? $record->client->full_name.' ('.$record->client->phone.')'
+                        : __('filament.unassigned')
                     ),
 
                 BadgeColumn::make('status')
-                    ->label('Holati')
-                    ->formatStateUsing(fn ($state) => match($state) {
-                        'created' => 'Yaratilgan',
-                        'arrived_china' => 'Xitoyga kelgan',
-                        'arrived_uzb' => 'O\'zbekistonga kelgan',
-                        'delivered' => 'Yetkazilgan',
+                    ->label(__('filament.status'))
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'created' => __('filament.status_created'),
+                        'arrived_china' => __('filament.status_arrived_china'),
+                        'arrived_uzb' => __('filament.status_arrived_uzb'),
+                        'delivered' => __('filament.status_delivered'),
                         default => $state,
                     })
                     ->colors([
@@ -57,18 +59,19 @@ class RecentParcelsWidget extends BaseWidget
                     ]),
 
                 TextColumn::make('weight')
-                    ->label('Og\'irlik')
+                    ->label(__('filament.weight'))
                     ->formatStateUsing(function ($record) {
-                        if (!$record->weight) {
+                        if (! $record->weight) {
                             return '—';
                         }
 
                         $ceiledWeight = ceil($record->weight * 2) / 2;
-                        return number_format($ceiledWeight, 1) . ' KG';
+
+                        return number_format($ceiledWeight, 1).' KG';
                     }),
 
                 TextColumn::make('updated_at')
-                    ->label('Oxirgi yangilanish')
+                    ->label(__('filament.last_updated'))
                     ->since()
                     ->dateTimeTooltip(),
             ])

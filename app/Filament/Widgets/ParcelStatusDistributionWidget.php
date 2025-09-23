@@ -8,10 +8,14 @@ use Filament\Widgets\ChartWidget;
 
 class ParcelStatusDistributionWidget extends ChartWidget
 {
-
     protected static ?int $sort = 3;
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
+
+    public function getHeading(): string
+    {
+        return __('filament.status_distribution_title');
+    }
 
     protected function getData(): array
     {
@@ -42,10 +46,10 @@ class ParcelStatusDistributionWidget extends ChartWidget
                 ],
             ],
             'labels' => [
-                'Yaratilgan (' . $statusCounts['created'] . ')',
-                'Xitoyga kelgan (' . $statusCounts['arrived_china'] . ')',
-                'O\'zbekistonga kelgan (' . $statusCounts['arrived_uzb'] . ')',
-                'Yetkazilgan (' . $statusCounts['delivered'] . ')',
+                __('filament.status_created').' ('.$statusCounts['created'].')',
+                __('filament.status_arrived_china').' ('.$statusCounts['arrived_china'].')',
+                __('filament.status_arrived_uzb').' ('.$statusCounts['arrived_uzb'].')',
+                __('filament.status_delivered').' ('.$statusCounts['delivered'].')',
             ],
         ];
     }

@@ -21,16 +21,16 @@ class ClientsTable
         return $table
             ->columns([
                 TextColumn::make('phone')
-                    ->label('Telefon raqami')
+                    ->label(__('filament.phone'))
                     ->searchable(),
                 TextColumn::make('full_name')
-                    ->label('F.I.O')
+                    ->label(__('filament.full_name'))
                     ->searchable(),
                 TextColumn::make('address')
-                    ->label('Manzil')
+                    ->label(__('filament.address'))
                     ->searchable(),
                 TextColumn::make('created_at')
-                    ->label('Ro\'yxatga olingan vaqti')
+                    ->label(__('filament.registration_date'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

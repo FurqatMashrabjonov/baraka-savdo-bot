@@ -23,9 +23,17 @@ class ClientResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static ?string $navigationLabel = 'Klientlar';
+    protected static ?string $navigationLabel = null;
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.clients');
+    }
 
-    protected static ?string $recordTitleAttribute = 'Klientlar';
+    public static function getRecordTitle($record): string
+    {
+        return __('filament.clients');
+    }
 
     public static function form(Schema $schema): Schema
     {
