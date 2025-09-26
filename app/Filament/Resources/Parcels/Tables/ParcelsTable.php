@@ -264,15 +264,34 @@ class ParcelsTable
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(function ($state, callable $set, callable $get, $record) {
                                                 $usdAmount = (float) $state ?: 0;
-                                                $uzsAmount = (float) $get('uzs_amount') ?: 0;
+                                                $currentUzsAmount = (float) $get('uzs_amount') ?: 0;
                                                 $rate = \App\Models\CurrencyExchangeRate::getCurrentUsdToUzsRate();
 
+                                                // Calculate what this USD amount covers in UZS
+                                                $usdInUzs = $usdAmount * $rate;
+
+                                                // Get expected total
+                                                $pricing = \App\Models\PricingSetting::getActivePricing();
+                                                if ($pricing && $record->weight) {
+                                                    $expectedTotal = $pricing->calculateExpectedAmountUzs($record->getCalculatedWeight());
+
+                                                    // If USD amount is insufficient, auto-fill UZS with remaining amount
+                                                    if ($usdInUzs < $expectedTotal) {
+                                                        $remainingNeeded = $expectedTotal - $usdInUzs;
+                                                        $set('uzs_amount', $remainingNeeded);
+                                                        $currentUzsAmount = $remainingNeeded;
+                                                    } else {
+                                                        // If USD amount is sufficient or more, clear UZS
+                                                        $set('uzs_amount', 0);
+                                                        $currentUzsAmount = 0;
+                                                    }
+                                                }
+
                                                 // Calculate total in UZS
-                                                $totalUzs = ($usdAmount * $rate) + $uzsAmount;
+                                                $totalUzs = $usdInUzs + $currentUzsAmount;
                                                 $set('payment_total_uzs', number_format($totalUzs, 0, '.', ' '));
 
                                                 // Calculate remaining amount needed
-                                                $pricing = \App\Models\PricingSetting::getActivePricing();
                                                 if ($pricing && $record->weight) {
                                                     $expectedTotal = $pricing->calculateExpectedAmountUzs($record->getCalculatedWeight());
                                                     $remaining = max(0, $expectedTotal - $totalUzs);
@@ -772,10 +791,24 @@ class ParcelsTable
                                                     ->live(onBlur: true)
                                                     ->afterStateUpdated(function ($state, callable $set, callable $get) use ($totalExpectedUzs) {
                                                         $usdAmount = (float) $state ?: 0;
-                                                        $uzsAmount = (float) $get('total_uzs_amount') ?: 0;
+                                                        $currentUzsAmount = (float) $get('total_uzs_amount') ?: 0;
                                                         $rate = \App\Models\CurrencyExchangeRate::getCurrentUsdToUzsRate();
 
-                                                        $totalUzs = ($usdAmount * $rate) + $uzsAmount;
+                                                        // Calculate what this USD amount covers in UZS
+                                                        $usdInUzs = $usdAmount * $rate;
+
+                                                        // If USD amount is insufficient, auto-fill UZS with remaining amount
+                                                        if ($usdInUzs < $totalExpectedUzs) {
+                                                            $remainingNeeded = $totalExpectedUzs - $usdInUzs;
+                                                            $set('total_uzs_amount', $remainingNeeded);
+                                                            $currentUzsAmount = $remainingNeeded;
+                                                        } else {
+                                                            // If USD amount is sufficient or more, clear UZS
+                                                            $set('total_uzs_amount', 0);
+                                                            $currentUzsAmount = 0;
+                                                        }
+
+                                                        $totalUzs = $usdInUzs + $currentUzsAmount;
                                                         $set('payment_total_display', number_format($totalUzs, 0, '.', ' '));
 
                                                         $remaining = max(0, $totalExpectedUzs - $totalUzs);
