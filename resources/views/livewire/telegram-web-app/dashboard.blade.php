@@ -94,11 +94,52 @@
                             <div class="flex-1">
                                 <div class="font-medium text-gray-900 dark:text-neutral-100">{{ $parcel->track_number }}</div>
                                 <div class="text-sm text-gray-500 dark:text-neutral-400">
-                                    2.5 {{ __('dashboard.kg') }} • 6 {{ __('dashboard.currency') }}
+                                    @if($parcel->weight)
+                                        {{ number_format($parcel->weight, 2) }} {{ __('dashboard.kg') }}
+                                    @else
+                                        {{ __('dashboard.weight') }}: N/A
+                                    @endif
+                                    •
+                                    @if($parcel->payment_status === 'paid')
+                                        @if($parcel->payment_amount_usd > 0 && $parcel->payment_amount_uzs > 0)
+                                            ${{ number_format($parcel->payment_amount_usd, 2) }} + {{ number_format($parcel->payment_amount_uzs, 0, '.', ' ') }} UZS
+                                        @elseif($parcel->payment_amount_usd > 0)
+                                            ${{ number_format($parcel->payment_amount_usd, 2) }}
+                                        @elseif($parcel->payment_amount_uzs > 0)
+                                            {{ number_format($parcel->payment_amount_uzs, 0, '.', ' ') }} UZS
+                                        @else
+                                            {{ __('dashboard.paid') }}
+                                        @endif
+                                    @else
+                                        @php
+                                            $pricing = \App\Models\PricingSetting::getActivePricing();
+                                            $expectedCost = $pricing && $parcel->weight ? $pricing->calculateExpectedAmountUsd($parcel->getCalculatedWeight()) : 0;
+                                        @endphp
+                                        @if($expectedCost > 0)
+                                            ${{ number_format($expectedCost, 2) }} ({{ __('dashboard.unpaid') }})
+                                        @else
+                                            {{ __('dashboard.unpaid') }}
+                                        @endif
+                                    @endif
                                 </div>
-                                <span class="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
-                                    {{ $parcel->getStatusLabel() }}
-                                </span>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="inline-block px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
+                                        {{ $parcel->getStatusLabel() }}
+                                    </span>
+                                    @if($parcel->payment_status === 'paid')
+                                        <span class="inline-block px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full">
+                                            ✓ {{ __('dashboard.paid') }}
+                                        </span>
+                                    @elseif($parcel->isReadyForPayment())
+                                        <span class="inline-block px-2 py-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 rounded-full">
+                                            ⏳ {{ __('dashboard.ready_for_payment') }}
+                                        </span>
+                                    @else
+                                        <span class="inline-block px-2 py-1 text-xs bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300 rounded-full">
+                                            ⏳ {{ __('dashboard.pending') }}
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         <svg class="w-5 h-5 text-gray-400 dark:text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

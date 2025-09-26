@@ -22,12 +22,13 @@ class OrderPaymentConversation extends Conversation
     {
         $client = $this->authService()->getClientByChatId($bot->chatId());
 
-        if (!$client) {
+        if (! $client) {
             $bot->sendMessage(
                 text: __('telegram.error_try_again'),
                 reply_markup: ReplyKeyboards::home()
             );
             $this->end();
+
             return;
         }
 
@@ -36,24 +37,25 @@ class OrderPaymentConversation extends Conversation
         if ($parcels->isEmpty()) {
             $bot->sendMessage(
                 text: __('telegram.no_parcels'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
             $this->end();
+
             return;
         }
 
-        $message = __('telegram.your_parcels') . "\n\n";
+        $message = __('telegram.your_parcels')."\n\n";
 
         foreach ($parcels as $parcel) {
-            $message .= "📦 <b>" . __('telegram.track_number_label') . ":</b> {$parcel->track_number}\n";
-            $message .= "⚖️ <b>" . __('telegram.weight_label') . ":</b> {$parcel->getFormattedWeightAttribute()}\n";
-            $message .= "💰 <b>" . __('telegram.delivery_cost_label') . ":</b> $6\n";
-            $message .= "📊 <b>" . __('telegram.status_label') . ":</b> {$parcel->getStatusLabel()}\n\n";
+            $message .= '📦 <b>'.__('telegram.track_number_label').":</b> {$parcel->track_number}\n";
+            $message .= '⚖️ <b>'.__('telegram.weight_label').":</b> {$parcel->getFormattedWeightAttribute()}\n";
+            $message .= '💰 <b>'.__('telegram.delivery_cost_label').":</b> $6\n";
+            $message .= '📊 <b>'.__('telegram.status_label').":</b> {$parcel->getStatusLabel()}\n\n";
         }
 
         // Determine the base URL - use ngrok URL if available, otherwise use app URL
         $baseUrl = config('app.ngrok_url') ?: config('app.url');
-        $webAppUrl = $baseUrl . '/telegram-web-app/dashboard?uid=' . $client->uid;
+        $webAppUrl = $baseUrl.'/telegram-web-app/dashboard?uid='.$client->uid;
 
         // Create inline keyboard with Web App button
         $inlineKeyboard = InlineKeyboardMarkup::make()

@@ -4,17 +4,17 @@ return [
     // Navigation Labels
     'parcels' => 'Pochtalar',
     'clients' => 'Klientlar',
-    
+
     // Model Labels
     'parcel' => 'Pochta',
     'client' => 'Klient',
-    
+
     // Common Fields
     'id' => 'ID',
     'status' => 'Holati',
     'created_at' => 'Yaratilgan',
     'updated_at' => 'Yangilangan',
-    
+
     // Parcel Fields
     'track_number' => 'Trek raqami',
     'weight' => 'Og\'irligi (kg)',
@@ -22,7 +22,7 @@ return [
     'china_uploaded_at' => 'Xitoyga kelgan vaqti',
     'uzb_uploaded_at' => 'O\'zbekistonga kelgan vaqti',
     'client_name' => 'Mijoz',
-    
+
     // Client Fields
     'full_name' => 'To\'liq ismi',
     'phone' => 'Telefon raqami',
@@ -34,13 +34,13 @@ return [
     'username' => 'Foydalanuvchi nomi',
     'address' => 'Manzil',
     'registration_date' => 'Ro\'yxatga olingan vaqti',
-    
+
     // Status Labels
     'status_created' => 'Yaratilgan',
     'status_arrived_china' => 'Xitoyga kelgan',
     'status_arrived_uzb' => 'O\'zbekistonga kelgan',
     'status_delivered' => 'Yetkazilgan',
-    
+
     // Stats Labels
     'total_parcels' => 'Jami posilkalar',
     'total_clients' => 'Jami mijozlar',
@@ -56,11 +56,37 @@ return [
     'vs_last_month' => 'o\'tgan oyga nisbatan',
     'telegram_integration' => 'Telegram integratsiyasi',
     'clients_with_parcels' => 'posilkalari bor mijozlar',
-    
+
+    // Payment Status
+    'payment_pending' => 'To\'lov kutilmoqda',
+    'payment_paid' => 'To\'langan',
+    'payment_cancelled' => 'Bekor qilingan',
+    'payment_status' => 'To\'lov holati',
+    'payment_date' => 'To\'lov sanasi',
+    'payment_type' => 'To\'lov turi',
+    'payment_amount' => 'To\'lov miqdori',
+    'payment_online' => 'Onlayn',
+    'payment_offline' => 'Naqd',
+    'process_payment' => 'To\'lovni qabul qilish',
+    'usd_amount' => 'Dollar miqdori',
+    'uzs_amount' => 'So\'m miqdori',
+    'exchange_rate' => 'Ayirboshlash kursi',
+    'total_equivalent' => 'Jami ekvivalent',
+    'payment_notes' => 'To\'lov haqida eslatma',
+    'processed_by' => 'Kim tomonidan qabul qilingan',
+    'payment_success' => 'To\'lov muvaffaqiyatli',
+    'payment_error' => 'To\'lov xatoligi',
+    'payment_processed_successfully' => 'To\'lov muvaffaqiyatli qabul qilindi',
+    'payment_processing_failed' => 'To\'lovni qabul qilishda xatolik yuz berdi',
+    'process_payment_modal_title' => 'To\'lovni qabul qilish',
+    'payment_amount_required' => 'Kamida bitta to\'lov miqdorini kiriting',
+    'payment_success' => 'To\'lov muvaffaqiyatli qabul qilindi',
+    'payment_error' => 'To\'lov xatoligi',
+
     // Placeholders
     'unassigned' => 'Tayinlanmagan',
     'not_set' => '—',
-    
+
     // Actions
     'edit' => 'Tahrirlash',
     'delete' => 'O\'chirish',
@@ -70,31 +96,31 @@ return [
     'cancel' => 'Bekor qilish',
     'import' => 'Import qilish',
     'export' => 'Export qilish',
-    
+
     // Messages
     'track_number_copied' => 'Trek raqami nusxalandi',
     'import_success' => 'Ma\'lumotlar muvaffaqiyatli import qilindi',
     'export_success' => 'Ma\'lumotlar muvaffaqiyatli export qilindi',
-    
+
     // Filters
     'filter_status' => 'Holati',
     'filter_unassigned' => 'Tayinlanmagan mijozlar',
     'filter_all' => 'Barchasi',
-    
+
     // Bulk Actions
     'bulk_delete' => 'Tanlangan elementlarni o\'chirish',
     'bulk_export' => 'Tanlangan elementlarni export qilish',
-    
+
     // Import/Export
     'select_file' => 'Faylni tanlang',
     'upload_file' => 'Faylni yuklash',
     'download_template' => 'Shablonni yuklab olish',
     'import_description' => 'Excel yoki CSV fayl yuklang',
     'export_description' => 'Ma\'lumotlarni Excel formatida yuklab oling',
-    
+
     // Import Actions
-    'import_china' => 'Xitoydan import',
-    'import_uzbekistan' => 'O\'zbekistondan import',
+    'import_china' => 'Excel import(xitoy)',
+    'import_uzbekistan' => 'Excel import(uzb)',
     'import_china_modal_title' => 'Xitoydan Excel import qilish',
     'import_uzbekistan_modal_title' => 'O\'zbekistondan Excel import qilish',
     'china_excel_file' => 'Excel fayli (Xitoy)',
@@ -105,12 +131,12 @@ return [
     'import_success_uzbekistan' => 'O\'zbekiston Excel fayli muvaffaqiyatli import qilindi!',
     'import_error' => 'Import xatoligi',
     'import_action' => 'Import qilish',
-    
+
     // Widget titles
     'activity_chart_title' => 'So\'nggi 14 kun faoliyati',
     'status_distribution_title' => 'Holat bo\'yicha taqsimot',
     'recent_parcels_title' => 'So\'nggi posilkalar',
-    
+
     // Additional stats labels
     'last_7_days' => 'so\'nggi 7 kun',
     'no_new_parcels' => 'yangi posilkalar yo\'q',
@@ -122,8 +148,213 @@ return [
     'restricted_items' => 'ta\'qiqlangan tovarlar',
     'last_updated' => 'oxirgi yangilanish',
     'unassigned' => 'tayinlanmagan',
-    
+
     // Filters
     'filter_banned' => 'Taqiqlangan tovarlar',
     'filter_older_than_3_days' => '3 kundan oshganlar',
+
+    // Pricing Settings
+    'pricing_settings' => 'Narx sozlamalari',
+    'pricing_setting' => 'Narx sozlamasi',
+    'price_per_kg_usd' => 'kg uchun narx (USD)',
+    'pricing_information' => 'Narx ma\'lumotlari',
+    'pricing_description' => 'USD da kg boshiga standart narxni belgilang. UZS ekvivalenti joriy kurs asosida hisoblanadi.',
+    'usd_per_kg' => 'USD/kg',
+    'active' => 'Faol',
+    'active_pricing_help' => 'Faqat bitta narx sozlamasi faol bo\'lishi mumkin',
+    'notes' => 'Izohlar',
+    'notes_placeholder' => 'Ushbu narx sozlamasi haqida ixtiyoriy izohlar...',
+    'updated_by' => 'Yangilagan',
+    'last_updated' => 'Oxirgi yangilanish',
+    'system_settings' => 'Tizim sozlamalari',
+    'expected_amount' => 'Kutilayotgan summa',
+    'expected_amount_usd' => 'Kutilayotgan summa (USD)',
+    'expected_amount_uzs' => 'Kutilayotgan summa (UZS)',
+    'based_on_weight' => 'og\'irlik asosida',
+    'calculated_automatically' => 'avtomatik hisoblanadi',
+    'calculation_progress' => 'Hisoblash jarayoni',
+    'pricing_calculation_explanation' => 'Og\'irlik va joriy narx asosida kutilayotgan to\'lov summasi hisoblanishi',
+    'parcel_weight' => 'Posilka og\'irligi',
+    'step1_usd_calculation' => '1-qadam: USD hisoblanishi',
+    'current_exchange_rate' => 'Joriy valyuta kursi',
+    'step2_uzs_calculation' => '2-qadam: UZS hisoblanishi',
+    'delivery_cost' => 'Yetkazish narxi',
+    'delivery_cost_explanation' => 'Ushbu posilka uchun to\'lanishi kerak bo\'lgan summa',
+    'parcel_info' => 'Posilka ma\'lumotlari',
+    'delivery_rate' => 'Yetkazish tarifi',
+    'calculation' => 'Hisoblash',
+    'total_cost_usd' => 'Jami narx (USD)',
+    'total_cost_uzs' => 'Jami narx (UZS)',
+    'exchange_rate_used' => 'Ishlatilgan kurs',
+    'payment_received' => 'Qabul qilingan to\'lov',
+    'payment_received_explanation' => 'Mijozdan olingan to\'lov summalari',
+    'usd_received' => 'USD da qabul qilindi',
+    'uzs_received' => 'UZS da qabul qilindi',
+    'total_payment_uzs' => 'Jami to\'lov (UZS)',
+    'remaining_needed' => 'Kamayotgan summa',
+    'payment_validation' => 'To\'lov tekshiruvi',
+    'enter_payment_amounts' => 'To\'lov summalarini kiriting',
+    'payment_method' => 'To\'lov usuli',
+    'cash_payment' => 'Naqd to\'lov',
+    'online_payment' => 'Onlayn to\'lov',
+    'payment_notes_placeholder' => 'To\'lov haqida qo\'shimcha ma\'lumotlar...',
+    'payment_sufficient' => 'To\'lov yetarli',
+    'payment_insufficient' => 'To\'lov yetarli emas',
+    'enter_at_least_one_amount' => 'Kamida bitta to\'lov summasini kiriting',
+    'pricing_not_available' => 'Narx sozlamalari mavjud emas yoki posilka og\'irligi noma\'lum',
+    'payment_shortfall' => 'Kutilgan: :expected UZS, Qabul qilindi: :received UZS. Kamayotgan: :shortfall UZS',
+    'overpayment_notice' => 'Ortiqcha to\'lov: :amount UZS',
+    'view_details' => 'Batafsil ko\'rish',
+    'parcel_details' => 'Posilka ma\'lumotlari',
+    'delivery_progress' => 'Yetkazish jarayoni',
+    'basic_information' => 'Asosiy ma\'lumotlar',
+    'payment_information' => 'To\'lov ma\'lumotlari',
+    'timeline' => 'Vaqt jadvali',
+    'expected_delivery_cost' => 'Kutilayotgan yetkazish narxi',
+    'per_kg' => 'kg uchun',
+    'banned' => 'Taqiqlangan',
+    'allowed' => 'Ruxsat etilgan',
+    'delivery_date' => 'Yetkazish sanasi',
+    'payment_not_started' => 'To\'lov boshlanmagan',
+
+    // Bulk Payment
+    'bulk_payment' => 'Ommaviy to\'lov',
+    'bulk_payment_modal_title' => 'Bir nechta posilka uchun to\'lov',
+    'bulk_payment_modal_description' => 'Tanlangan barcha posilkalar uchun to\'lovni qayta ishlash',
+    'bulk_payment_summary' => 'To\'lov xulosasi',
+    'bulk_payment_summary_description' => 'Tanlangan posilkalar va umumiy to\'lov',
+    'selected_parcels' => 'Tanlangan posilkalar',
+    'parcels' => 'posilka',
+    'total_expected_usd' => 'Jami kutilayotgan USD',
+    'total_expected_uzs' => 'Jami kutilayotgan UZS',
+    'enter_total_payment_received' => 'Qabul qilingan umumiy to\'lovni kiriting',
+    'total_usd_received' => 'Jami USD olindi',
+    'total_uzs_received' => 'Jami UZS olindi',
+    'total_payment_uzs' => 'Jami to\'lov (UZS)',
+    'remaining_needed' => 'Qolgan kerak',
+    'payment_validation' => 'To\'lov tekshiruvi',
+    'enter_payment_amounts' => 'To\'lov miqdorlarini kiriting',
+    'bulk_payment_notes_placeholder' => 'Ommaviy to\'lov uchun qo\'shimcha ma\'lumotlar...',
+    'no_parcels_ready_for_payment' => 'To\'lov uchun tayyor posilkalar yo\'q',
+    'bulk_payment_shortfall' => 'Kutilgan: :expected UZS, Qabul qilindi: :received UZS. Kamayotgan: :shortfall UZS',
+    'bulk_payment_success' => ':count ta posilka uchun to\'lov muvaffaqiyatli qayta ishlandi',
+    'partial_payment_error' => 'Ba\'zi to\'lovlar muvaffaqiyatsiz tugadi',
+    'bulk_payment_errors' => ':count ta posilka uchun to\'lov xatoliklari',
+    'unassigned' => 'Belgilanmagan',
+
+    // Payment Modal Missing Translations
+    'track_number_copied' => 'Trek raqami nusxalandi',
+    'not_set' => 'Belgilanmagan',
+    'filter_status' => 'Holatga ko\'ra filter',
+    'filter_unassigned' => 'Belgilanmagan',
+    'filter_banned' => 'Taqiqlangan',
+    'filter_older_than_3_days' => '3 kundan eski',
+    'filter_by_client' => 'Mijoz bo\'yicha filter',
+
+    // User Management
+    'user_information' => 'Foydalanuvchi ma\'lumotlari',
+    'user_information_description' => 'Foydalanuvchining asosiy ma\'lumotlarini kiriting',
+    'name' => 'Ism',
+    'email' => 'Email',
+    'password' => 'Parol',
+    'location' => 'Joylashuv',
+    'china' => 'Xitoy',
+    'uzbekistan' => 'O\'zbekiston',
+    'select_location' => 'Joylashuvni tanlang',
+    'roles_permissions' => 'Rollar va ruxsatlar',
+    'roles_permissions_description' => 'Foydalanuvchi rollarini va ruxsatlarini belgilang',
+    'roles' => 'Rollar',
+    'permissions' => 'Ruxsatlar',
+    'parcels_processed' => 'Qayta ishlangan posilkalar',
+    'total_payments' => 'Jami to\'lovlar',
+    'last_login' => 'Oxirgi kirish',
+    'filter_by_role' => 'Rol bo\'yicha filter',
+    'filter_by_location' => 'Joylashuv bo\'yicha filter',
+    'total_users' => 'Jami foydalanuvchilar',
+    'china_kassirs' => 'Xitoy kassirlari',
+    'active_china_kassirs' => 'Faol Xitoy kassirlari',
+    'uzb_kassirs' => 'O\'zbekiston kassirlari',
+    'active_uzb_kassirs' => 'Faol O\'zbekiston kassirlari',
+    'payments_today' => 'Bugungi to\'lovlar',
+    'total_processed' => 'Jami qayta ishlangan',
+    'top_performer' => 'Eng yaxshi kassir',
+    'none' => 'Yo\'q',
+    'payments_this_month' => 'bu oydagi to\'lovlar',
+    'no_payments_yet' => 'Hali to\'lovlar yo\'q',
+    'view_statistics' => 'Statistikalarni ko\'rish',
+    'user_statistics' => 'Foydalanuvchi statistikalari',
+    'overview_statistics' => 'Umumiy statistikalar',
+    'total_usd' => 'Jami USD',
+    'total_uzs' => 'Jami UZS',
+    'avg_per_day' => 'Kunlik o\'rtacha',
+    'this_month_performance' => 'Bu oy ishlash ko\'rsatkichlari',
+    'usd_processed' => 'USD qayta ishlangan',
+    'uzs_processed' => 'UZS qayta ishlangan',
+    'today_payments' => 'Bugungi to\'lovlar',
+    'last_7_days_activity' => 'Oxirgi 7 kun faolligi',
+    'performance_insights' => 'Ish ko\'rsatkichlari tahlili',
+    'best_single_day' => 'Eng yaxshi kun',
+    'member_since' => 'A\'zo bo\'lgan vaqt',
+    'avg_payment_value' => 'O\'rtacha to\'lov qiymati',
+    'all_users' => 'Barcha foydalanuvchilar',
+    'delivery_rate' => 'Yetkazish tarifi',
+    'calculation' => 'Hisoblash',
+    'total_cost_usd' => 'Umumiy narx USD',
+    'total_cost_uzs' => 'Umumiy narx UZS',
+    'exchange_rate_used' => 'Ishlatilgan kurs',
+    'payment_received' => 'Olingan to\'lov',
+    'payment_received_explanation' => 'Mijozdan haqiqatda olingan to\'lov summasi',
+    'usd_received' => 'Olingan USD',
+    'uzs_received' => 'Olingan UZS',
+    'import_error' => 'Import xatosi',
+    'import_action' => 'Import qilish',
+    'import_uzbekistan_modal_title' => 'O\'zbekistonga import qilish',
+    'parcel_track_number' => 'Trek raqami',
+    'parcel_weight' => 'Og\'irligi',
+    'parcel_status' => 'Holati',
+    'parcel_expected_cost' => 'Kutilayotgan narx',
+    'selected_parcels_details' => 'Tanlangan posilkalar tafsilotlari',
+    'review_parcels_before_payment' => 'To\'lovdan oldin posilkalarni ko\'rib chiqing',
+    'not_ready_for_payment' => 'To\'lov uchun tayyor emas',
+    'not_available' => 'Mavjud emas',
+    'total_expected' => 'Jami kutilayotgan',
+    'exchange_rate_info' => 'Valyuta kursi',
+    'payment_details' => 'To\'lov tafsilotlari',
+    'expected_usd' => 'Kutilayotgan USD',
+    'expected_uzs' => 'Kutilayotgan UZS',
+    'payment_summary' => 'To\'lov xulosasi',
+    'total_parcels_selected' => 'Jami tanlangan posilkalar',
+    'ready_for_payment' => 'To\'lov uchun tayyor',
+    'current_exchange_rate' => 'Joriy valyuta kursi',
+    'phone' => 'Telefon',
+    'actual_weight' => 'Haqiqiy og\'irligi',
+    'calculated_weight' => 'Hisoblangan og\'irligi',
+    'expected_cost_usd' => 'Kutilayotgan narx USD',
+    'expected_cost_uzs' => 'Kutilayotgan narx UZS',
+    'payment_summary' => 'To\'lov xulosasi',
+    'total_amounts_to_collect' => 'Yig\'ish kerak bo\'lgan umumiy summalar',
+    'parcel_details' => 'Posilka tafsilotlari',
+
+    // Payment amounts
+    'payment_amount' => 'To\'lov miqdori',
+    'payment_amount_usd' => 'To\'lov (USD)',
+    'payment_amount_uzs' => 'To\'lov (UZS)',
+
+    // Kassir Stats Widget
+    'my_total_payments' => 'Mening umumiy to\'lovlarim',
+    'all_time_total' => 'Jami qayta ishlangan',
+    'this_month' => 'Shu oy',
+    'payments_this_month' => 'Shu oydagi to\'lovlar',
+    'today' => 'Bugun',
+    'payments_today' => 'Bugungi to\'lovlar',
+    'this_week' => 'Shu hafta',
+    'payments_this_week' => 'Shu haftadagi to\'lovlar',
+    'total_usd_processed' => 'Jami USD qayta ishlangan',
+    'lifetime_usd' => 'Barcha vaqtdagi USD',
+    'total_uzs_processed' => 'Jami UZS qayta ishlangan',
+    'lifetime_uzs' => 'Barcha vaqtdagi UZS',
+
+    // Kassir Recent Payments Widget
+    'my_recent_payments' => 'Mening so\'nggi to\'lovlarim',
+    'last_20_payments_processed' => 'Siz qayta ishlagan so\'nggi 20 ta to\'lov',
 ];

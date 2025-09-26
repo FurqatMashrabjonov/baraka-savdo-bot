@@ -41,12 +41,64 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-500 dark:text-neutral-400">{{ __('dashboard.weight') }}:</span>
-                            <span class="text-gray-900 dark:text-neutral-100">2.5 {{ __('dashboard.kg') }}</span>
+                            <span class="text-gray-900 dark:text-neutral-100">
+                                @if($parcel->weight)
+                                    {{ number_format($parcel->weight, 2) }} {{ __('dashboard.kg') }}
+                                @else
+                                    N/A
+                                @endif
+                            </span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-500 dark:text-neutral-400">{{ __('dashboard.delivery_cost') }}:</span>
-                            <span class="text-gray-900 dark:text-neutral-100">6 {{ __('dashboard.currency') }}</span>
+                            <span class="text-gray-900 dark:text-neutral-100">
+                                @if($parcel->payment_status === 'paid')
+                                    @if($parcel->payment_amount_usd > 0 && $parcel->payment_amount_uzs > 0)
+                                        ${{ number_format($parcel->payment_amount_usd, 2) }} + {{ number_format($parcel->payment_amount_uzs, 0, '.', ' ') }} UZS
+                                    @elseif($parcel->payment_amount_usd > 0)
+                                        ${{ number_format($parcel->payment_amount_usd, 2) }}
+                                    @elseif($parcel->payment_amount_uzs > 0)
+                                        {{ number_format($parcel->payment_amount_uzs, 0, '.', ' ') }} UZS
+                                    @else
+                                        {{ __('dashboard.paid') }}
+                                    @endif
+                                @else
+                                    @php
+                                        $pricing = \App\Models\PricingSetting::getActivePricing();
+                                        $expectedCost = $pricing && $parcel->weight ? $pricing->calculateExpectedAmountUsd($parcel->getCalculatedWeight()) : 0;
+                                    @endphp
+                                    @if($expectedCost > 0)
+                                        ${{ number_format($expectedCost, 2) }} ({{ __('dashboard.expected') }})
+                                    @else
+                                        {{ __('dashboard.pending_calculation') }}
+                                    @endif
+                                @endif
+                            </span>
                         </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 dark:text-neutral-400">{{ __('dashboard.payment_status') }}:</span>
+                            <span class="text-gray-900 dark:text-neutral-100">
+                                @if($parcel->payment_status === 'paid')
+                                    <span class="inline-flex items-center px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full">
+                                        ✓ {{ __('dashboard.paid') }}
+                                    </span>
+                                @elseif($parcel->isReadyForPayment())
+                                    <span class="inline-flex items-center px-2 py-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 rounded-full">
+                                        ⏳ {{ __('dashboard.ready_for_payment') }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 text-xs bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300 rounded-full">
+                                        ⏳ {{ __('dashboard.pending') }}
+                                    </span>
+                                @endif
+                            </span>
+                        </div>
+                        @if($parcel->payment_date)
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 dark:text-neutral-400">{{ __('dashboard.payment_date') }}:</span>
+                            <span class="text-gray-900 dark:text-neutral-100">{{ $parcel->payment_date->format('M d, Y H:i') }}</span>
+                        </div>
+                        @endif
 {{--                        <div class="flex justify-between">--}}
 {{--                            <span class="text-gray-500 dark:text-neutral-400">{{ __('dashboard.status') }}:</span>--}}
 {{--                            <span class="text-gray-900 dark:text-neutral-100">{{ $parcel->getStatusLabel() }}</span>--}}
@@ -95,17 +147,17 @@
                                     @endif
                                 </div>
 
-                                {{-- Mock timestamps for demonstration --}}
-                                @if($step['completed'])
+                                {{-- Real timestamps --}}
+                                @if($step['completed'] && isset($step['date']) && $step['date'])
                                     <p class="text-sm text-gray-500 dark:text-neutral-400 mt-1">
-                                        @if($key === \App\Enums\ParcelStatus::CREATED->value)
-                                            {{ now()->subDays(7)->format('M d, Y H:i') }}
-                                        @elseif($key === \App\Enums\ParcelStatus::ARRIVED_CHINA->value)
-                                            {{ now()->subDays(5)->format('M d, Y H:i') }}
-                                        @elseif($key === \App\Enums\ParcelStatus::ARRIVED_UZB->value)
-                                            {{ now()->subDays(2)->format('M d, Y H:i') }}
-                                        @elseif($key === \App\Enums\ParcelStatus::DELIVERED->value)
-                                            {{ now()->format('M d, Y H:i') }}
+                                        {{ $step['date']->format('M d, Y H:i') }}
+                                    </p>
+                                @elseif($step['current'])
+                                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                                        @if($key === 'payment')
+                                            {{ __('dashboard.awaiting_payment') }}
+                                        @else
+                                            {{ __('dashboard.in_progress') }}
                                         @endif
                                     </p>
                                 @endif

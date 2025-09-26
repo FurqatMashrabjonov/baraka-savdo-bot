@@ -9,6 +9,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ClientStatsWidget extends BaseWidget
 {
+    public static function canView(): bool
+    {
+        return ! auth()->user()->isKassir();
+    }
+
     protected static ?int $sort = 2;
 
     protected function getStats(): array

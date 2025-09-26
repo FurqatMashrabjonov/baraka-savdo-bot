@@ -12,6 +12,11 @@ class ParcelStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    public static function canView(): bool
+    {
+        return ! auth()->user()->isKassir();
+    }
+
     protected function getStats(): array
     {
         // Essential parcel metrics

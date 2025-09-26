@@ -49,9 +49,12 @@ class JoinChannelConversation extends Conversation
 
             // Check if user is already completely registered
             if ($this->isUserLoggedIn($bot)) {
+                $authService = app(\App\Services\TelegramAuthService::class);
+                $client = $authService->getClientByChatId($bot->chatId());
+
                 $bot->sendMessage(
                     text: __('telegram.greeting'),
-                    reply_markup: ReplyKeyboards::home()
+                    reply_markup: ReplyKeyboards::home($client)
                 );
                 $this->end(); // End conversation properly
 

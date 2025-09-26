@@ -89,4 +89,12 @@ class User extends Authenticatable
     {
         return $this->hasPermissionTo('view_dashboard');
     }
+
+    /**
+     * Parcels that this user processed payments for
+     */
+    public function processedPayments()
+    {
+        return $this->hasMany(Parcel::class, 'payment_processed_by');
+    }
 }

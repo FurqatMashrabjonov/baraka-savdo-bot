@@ -14,6 +14,11 @@ class RecentParcelsWidget extends BaseWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return ! auth()->user()->isKassir();
+    }
+
     public function getHeading(): string
     {
         return __('filament.recent_parcels_title');

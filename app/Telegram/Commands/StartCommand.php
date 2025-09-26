@@ -24,9 +24,12 @@ class StartCommand extends Command
         // Check if user is already completely registered
         if ($this->isUserLoggedIn($bot)) {
             logger()->info('StartCommand - user already logged in');
+            $authService = app(TelegramAuthService::class);
+            $client = $authService->getClientByChatId($bot->chatId());
+
             $bot->sendMessage(
                 text: __('telegram.greeting'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
 
             return;

@@ -55,7 +55,7 @@ class AskLanguageConversation extends Conversation
 
             $bot->sendMessage(
                 text: __('telegram.language_changed_successfully'),
-                reply_markup: ($client && $client->isComplete()) ? ReplyKeyboards::home() : ReplyKeyboards::login()
+                reply_markup: ($client && $client->isComplete()) ? ReplyKeyboards::home($client) : ReplyKeyboards::login()
             );
         } else {
             $bot->sendMessage(__('telegram.error_try_again'));

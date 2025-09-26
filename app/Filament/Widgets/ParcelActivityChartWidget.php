@@ -13,6 +13,11 @@ class ParcelActivityChartWidget extends ChartWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return ! auth()->user()->isKassir();
+    }
+
     public function getHeading(): string
     {
         return __('filament.activity_chart_title');

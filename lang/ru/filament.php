@@ -4,17 +4,17 @@ return [
     // Navigation Labels
     'parcels' => 'Посылки',
     'clients' => 'Клиенты',
-    
+
     // Model Labels
     'parcel' => 'Посылка',
     'client' => 'Клиент',
-    
+
     // Common Fields
     'id' => 'ID',
     'status' => 'Статус',
     'created_at' => 'Создано',
     'updated_at' => 'Обновлено',
-    
+
     // Parcel Fields
     'track_number' => 'Трек-номер',
     'weight' => 'Вес (кг)',
@@ -22,7 +22,7 @@ return [
     'china_uploaded_at' => 'Время прибытия в Китай',
     'uzb_uploaded_at' => 'Время прибытия в Узбекистан',
     'client_name' => 'Клиент',
-    
+
     // Client Fields
     'full_name' => 'Полное имя',
     'phone' => 'Номер телефона',
@@ -34,13 +34,13 @@ return [
     'username' => 'Имя пользователя',
     'address' => 'Адрес',
     'registration_date' => 'Дата регистрации',
-    
+
     // Status Labels
     'status_created' => 'Создано',
     'status_arrived_china' => 'Прибыло в Китай',
     'status_arrived_uzb' => 'Прибыло в Узбекистан',
     'status_delivered' => 'Доставлено',
-    
+
     // Stats Labels
     'total_parcels' => 'Всего посылок',
     'total_clients' => 'Всего клиентов',
@@ -56,11 +56,37 @@ return [
     'vs_last_month' => 'по сравнению с прошлым месяцем',
     'telegram_integration' => 'Интеграция Telegram',
     'clients_with_parcels' => 'клиенты с посылками',
-    
+
+    // Payment Status
+    'payment_pending' => 'Ожидает оплаты',
+    'payment_paid' => 'Оплачено',
+    'payment_cancelled' => 'Отменено',
+    'payment_status' => 'Статус оплаты',
+    'payment_date' => 'Дата оплаты',
+    'payment_type' => 'Тип оплаты',
+    'payment_amount' => 'Сумма оплаты',
+    'payment_online' => 'Онлайн',
+    'payment_offline' => 'Наличные',
+    'process_payment' => 'Принять оплату',
+    'usd_amount' => 'Сумма в долларах',
+    'uzs_amount' => 'Сумма в сумах',
+    'exchange_rate' => 'Курс обмена',
+    'total_equivalent' => 'Общий эквивалент',
+    'payment_notes' => 'Примечания к оплате',
+    'processed_by' => 'Обработано',
+    'payment_success' => 'Оплата успешна',
+    'payment_error' => 'Ошибка оплаты',
+    'payment_processed_successfully' => 'Оплата успешно принята',
+    'payment_processing_failed' => 'Ошибка при обработке оплаты',
+    'process_payment_modal_title' => 'Принять оплату',
+    'payment_amount_required' => 'Введите хотя бы одну сумму оплаты',
+    'payment_success' => 'Оплата успешно принята',
+    'payment_error' => 'Ошибка оплаты',
+
     // Placeholders
     'unassigned' => 'Не назначено',
     'not_set' => '—',
-    
+
     // Actions
     'edit' => 'Редактировать',
     'delete' => 'Удалить',
@@ -70,31 +96,31 @@ return [
     'cancel' => 'Отменить',
     'import' => 'Импорт',
     'export' => 'Экспорт',
-    
+
     // Messages
     'track_number_copied' => 'Трек-номер скопирован',
     'import_success' => 'Данные успешно импортированы',
     'export_success' => 'Данные успешно экспортированы',
-    
+
     // Filters
     'filter_status' => 'Статус',
     'filter_unassigned' => 'Неназначенные клиенты',
     'filter_all' => 'Все',
-    
+
     // Bulk Actions
     'bulk_delete' => 'Удалить выбранные элементы',
     'bulk_export' => 'Экспортировать выбранные элементы',
-    
+
     // Import/Export
     'select_file' => 'Выберите файл',
     'upload_file' => 'Загрузить файл',
     'download_template' => 'Скачать шаблон',
     'import_description' => 'Загрузите файл Excel или CSV',
     'export_description' => 'Скачать данные в формате Excel',
-    
+
     // Import Actions
-    'import_china' => 'Импорт из Китая',
-    'import_uzbekistan' => 'Импорт из Узбекистана',
+    'import_china' => 'Excel Импорт(Китай)',
+    'import_uzbekistan' => 'Excel Импорт(Узбекистан)',
     'import_china_modal_title' => 'Импорт Excel из Китая',
     'import_uzbekistan_modal_title' => 'Импорт Excel из Узбекистана',
     'china_excel_file' => 'Excel файл (Китай)',
@@ -105,12 +131,12 @@ return [
     'import_success_uzbekistan' => 'Excel файл из Узбекистана успешно импортирован!',
     'import_error' => 'Ошибка импорта',
     'import_action' => 'Импортировать',
-    
+
     // Widget titles
     'activity_chart_title' => 'Активность за последние 14 дней',
     'status_distribution_title' => 'Распределение по статусам',
     'recent_parcels_title' => 'Последние посылки',
-    
+
     // Additional stats labels
     'last_7_days' => 'последние 7 дней',
     'no_new_parcels' => 'новых посылок нет',
@@ -122,8 +148,213 @@ return [
     'restricted_items' => 'заблокированные товары',
     'last_updated' => 'последнее обновление',
     'unassigned' => 'не назначен',
-    
+
     // Filters
     'filter_banned' => 'Заблокированные товары',
     'filter_older_than_3_days' => 'Старше 3 дней',
+    'filter_by_client' => 'Фильтр по клиенту',
+
+    // User Management
+    'user_information' => 'Информация о пользователе',
+    'user_information_description' => 'Введите основную информацию о пользователе',
+    'name' => 'Имя',
+    'email' => 'Email',
+    'password' => 'Пароль',
+    'location' => 'Местоположение',
+    'china' => 'Китай',
+    'uzbekistan' => 'Узбекистан',
+    'select_location' => 'Выберите местоположение',
+    'roles_permissions' => 'Роли и разрешения',
+    'roles_permissions_description' => 'Назначьте роли и разрешения пользователю',
+    'roles' => 'Роли',
+    'permissions' => 'Разрешения',
+    'parcels_processed' => 'Обработано посылок',
+    'total_payments' => 'Всего платежей',
+    'last_login' => 'Последний вход',
+    'filter_by_role' => 'Фильтр по роли',
+    'filter_by_location' => 'Фильтр по местоположению',
+    'total_users' => 'Всего пользователей',
+    'china_kassirs' => 'Кассиры Китая',
+    'active_china_kassirs' => 'Активные кассиры Китая',
+    'uzb_kassirs' => 'Кассиры Узбекистана',
+    'active_uzb_kassirs' => 'Активные кассиры Узбекистана',
+    'payments_today' => 'Платежи сегодня',
+    'total_processed' => 'Всего обработано',
+    'top_performer' => 'Лучший кассир',
+    'none' => 'Нет',
+    'payments_this_month' => 'платежей в этом месяце',
+    'no_payments_yet' => 'Пока нет платежей',
+    'view_statistics' => 'Просмотр статистики',
+    'user_statistics' => 'Статистика пользователя',
+    'overview_statistics' => 'Общая статистика',
+    'total_usd' => 'Всего USD',
+    'total_uzs' => 'Всего UZS',
+    'avg_per_day' => 'Среднее в день',
+    'this_month_performance' => 'Показатели за этот месяц',
+    'usd_processed' => 'USD обработано',
+    'uzs_processed' => 'UZS обработано',
+    'today_payments' => 'Платежи сегодня',
+    'last_7_days_activity' => 'Активность за последние 7 дней',
+    'performance_insights' => 'Анализ производительности',
+    'best_single_day' => 'Лучший день',
+    'member_since' => 'Участник с',
+    'avg_payment_value' => 'Средняя стоимость платежа',
+    'all_users' => 'Все пользователи',
+
+    // Pricing Settings
+    'pricing_settings' => 'Настройки цен',
+    'pricing_setting' => 'Настройка цены',
+    'price_per_kg_usd' => 'Цена за кг (USD)',
+    'pricing_information' => 'Информация о ценах',
+    'pricing_description' => 'Установите стандартную цену за килограмм в USD. Эквивалент в UZS будет рассчитан по текущему курсу.',
+    'usd_per_kg' => 'USD/кг',
+    'active' => 'Активно',
+    'active_pricing_help' => 'Только одна настройка цены может быть активной одновременно',
+    'notes' => 'Заметки',
+    'notes_placeholder' => 'Необязательные заметки об этой настройке цены...',
+    'updated_by' => 'Обновлено',
+    'last_updated' => 'Последнее обновление',
+    'system_settings' => 'Системные настройки',
+    'expected_amount' => 'Ожидаемая сумма',
+    'expected_amount_usd' => 'Ожидаемая сумма (USD)',
+    'expected_amount_uzs' => 'Ожидаемая сумма (UZS)',
+    'based_on_weight' => 'на основе веса',
+    'calculated_automatically' => 'рассчитывается автоматически',
+    'calculation_progress' => 'Процесс расчета',
+    'pricing_calculation_explanation' => 'Расчет ожидаемой суммы платежа на основе веса и текущих цен',
+    'parcel_weight' => 'Вес посылки',
+    'step1_usd_calculation' => 'Шаг 1: Расчет в USD',
+    'current_exchange_rate' => 'Текущий курс валют',
+    'step2_uzs_calculation' => 'Шаг 2: Расчет в UZS',
+    'delivery_cost' => 'Стоимость доставки',
+    'delivery_cost_explanation' => 'Сумма, которую необходимо оплатить за эту посылку',
+    'parcel_info' => 'Информация о посылке',
+    'delivery_rate' => 'Тариф доставки',
+    'calculation' => 'Расчет',
+    'total_cost_usd' => 'Общая стоимость (USD)',
+    'total_cost_uzs' => 'Общая стоимость (UZS)',
+    'exchange_rate_used' => 'Используемый курс',
+    'payment_received' => 'Полученный платеж',
+    'payment_received_explanation' => 'Суммы платежей, полученные от клиента',
+    'usd_received' => 'Получено в USD',
+    'uzs_received' => 'Получено в UZS',
+    'total_payment_uzs' => 'Общий платеж (UZS)',
+    'remaining_needed' => 'Недостающая сумма',
+    'payment_validation' => 'Проверка платежа',
+    'enter_payment_amounts' => 'Введите суммы платежей',
+    'payment_method' => 'Способ оплаты',
+    'cash_payment' => 'Наличный расчет',
+    'online_payment' => 'Онлайн платеж',
+    'payment_notes_placeholder' => 'Дополнительная информация о платеже...',
+    'payment_sufficient' => 'Платеж достаточен',
+    'payment_insufficient' => 'Платеж недостаточен',
+    'enter_at_least_one_amount' => 'Введите хотя бы одну сумму платежа',
+    'pricing_not_available' => 'Настройки цен недоступны или вес посылки неизвестен',
+    'payment_shortfall' => 'Ожидается: :expected UZS, Получено: :received UZS. Недостает: :shortfall UZS',
+    'overpayment_notice' => 'Переплата: :amount UZS',
+    'view_details' => 'Посмотреть детали',
+    'parcel_details' => 'Детали посылки',
+    'delivery_progress' => 'Прогресс доставки',
+    'basic_information' => 'Основная информация',
+    'payment_information' => 'Информация о платеже',
+    'timeline' => 'Хронология',
+    'expected_delivery_cost' => 'Ожидаемая стоимость доставки',
+    'per_kg' => 'за кг',
+    'banned' => 'Запрещено',
+    'allowed' => 'Разрешено',
+    'delivery_date' => 'Дата доставки',
+    'payment_not_started' => 'Оплата не начата',
+
+    // Bulk Payment
+    'bulk_payment' => 'Массовый платеж',
+    'bulk_payment_modal_title' => 'Оплата нескольких посылок',
+    'bulk_payment_modal_description' => 'Обработка платежа для всех выбранных посылок',
+    'bulk_payment_summary' => 'Сводка платежа',
+    'bulk_payment_summary_description' => 'Выбранные посылки и общий платеж',
+    'selected_parcels' => 'Выбранные посылки',
+    'parcels' => 'посылок',
+    'total_expected_usd' => 'Общая ожидаемая сумма USD',
+    'total_expected_uzs' => 'Общая ожидаемая сумма UZS',
+    'enter_total_payment_received' => 'Введите общую полученную сумму',
+    'total_usd_received' => 'Всего получено USD',
+    'total_uzs_received' => 'Всего получено UZS',
+    'total_payment_uzs' => 'Общий платеж (UZS)',
+    'remaining_needed' => 'Осталось нужно',
+    'payment_validation' => 'Проверка платежа',
+    'enter_payment_amounts' => 'Введите суммы платежа',
+    'bulk_payment_notes_placeholder' => 'Дополнительная информация для массового платежа...',
+    'no_parcels_ready_for_payment' => 'Нет посылок, готовых к оплате',
+    'bulk_payment_shortfall' => 'Ожидается: :expected UZS, Получено: :received UZS. Недостает: :shortfall UZS',
+    'bulk_payment_success' => 'Платеж успешно обработан для :count посылок',
+    'partial_payment_error' => 'Некоторые платежи завершились с ошибкой',
+    'bulk_payment_errors' => 'Ошибки платежа для :count посылок',
+    'unassigned' => 'Не назначено',
+
+    // Payment Modal Missing Translations
+    'track_number_copied' => 'Трек-номер скопирован',
+    'not_set' => 'Не установлено',
+    'filter_status' => 'Фильтр по статусу',
+    'filter_unassigned' => 'Неназначенные',
+    'filter_banned' => 'Запрещенные',
+    'filter_older_than_3_days' => 'Старше 3 дней',
+    'delivery_rate' => 'Тариф доставки',
+    'calculation' => 'Расчет',
+    'total_cost_usd' => 'Общая стоимость USD',
+    'total_cost_uzs' => 'Общая стоимость UZS',
+    'exchange_rate_used' => 'Используемый курс',
+    'payment_received' => 'Полученный платеж',
+    'payment_received_explanation' => 'Сумма фактически полученная от клиента',
+    'usd_received' => 'Получено USD',
+    'uzs_received' => 'Получено UZS',
+    'import_error' => 'Ошибка импорта',
+    'import_action' => 'Импортировать',
+    'import_uzbekistan_modal_title' => 'Импорт в Узбекистан',
+    'parcel_track_number' => 'Трек-номер',
+    'parcel_weight' => 'Вес',
+    'parcel_status' => 'Статус',
+    'parcel_expected_cost' => 'Ожидаемая стоимость',
+    'selected_parcels_details' => 'Детали выбранных посылок',
+    'review_parcels_before_payment' => 'Просмотрите посылки перед оплатой',
+    'not_ready_for_payment' => 'Не готова к оплате',
+    'not_available' => 'Недоступно',
+    'total_expected' => 'Общая ожидаемая сумма',
+    'exchange_rate_info' => 'Обменный курс',
+    'payment_details' => 'Детали платежа',
+    'expected_usd' => 'Ожидаемая сумма USD',
+    'expected_uzs' => 'Ожидаемая сумма UZS',
+    'payment_summary' => 'Сводка платежа',
+    'total_parcels_selected' => 'Общее количество выбранных посылок',
+    'ready_for_payment' => 'Готово к оплате',
+    'current_exchange_rate' => 'Текущий обменный курс',
+    'phone' => 'Телефон',
+    'actual_weight' => 'Фактический вес',
+    'calculated_weight' => 'Расчетный вес',
+    'expected_cost_usd' => 'Ожидаемая стоимость USD',
+    'expected_cost_uzs' => 'Ожидаемая стоимость UZS',
+    'payment_summary' => 'Сводка платежа',
+    'total_amounts_to_collect' => 'Общие суммы к сбору',
+    'parcel_details' => 'Детали посылки',
+
+    // Payment amounts
+    'payment_amount' => 'Сумма платежа',
+    'payment_amount_usd' => 'Платеж (USD)',
+    'payment_amount_uzs' => 'Платеж (UZS)',
+
+    // Kassir Stats Widget
+    'my_total_payments' => 'Мои общие платежи',
+    'all_time_total' => 'Всего обработано',
+    'this_month' => 'Этот месяц',
+    'payments_this_month' => 'Платежи в этом месяце',
+    'today' => 'Сегодня',
+    'payments_today' => 'Платежи сегодня',
+    'this_week' => 'Эта неделя',
+    'payments_this_week' => 'Платежи на этой неделе',
+    'total_usd_processed' => 'Всего USD обработано',
+    'lifetime_usd' => 'За всё время USD',
+    'total_uzs_processed' => 'Всего UZS обработано',
+    'lifetime_uzs' => 'За всё время UZS',
+
+    // Kassir Recent Payments Widget
+    'my_recent_payments' => 'Мои недавние платежи',
+    'last_20_payments_processed' => 'Последние 20 платежей, которые вы обработали',
 ];

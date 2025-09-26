@@ -67,9 +67,12 @@ $bot->onText('^('.implode('|', array_map('preg_quote', lang_all('telegram.feedba
 
 // Back to home button handler
 $bot->onText('^('.implode('|', array_map('preg_quote', lang_all('telegram.back_to_home'))).')$', function (Nutgram $bot) {
+    $authService = app(\App\Services\TelegramAuthService::class);
+    $client = $authService->getClientByChatId($bot->chatId());
+
     $bot->sendMessage(
         text: __('telegram.back_to_home_message'),
-        reply_markup: \App\Telegram\Keyboards\ReplyKeyboards::home()
+        reply_markup: \App\Telegram\Keyboards\ReplyKeyboards::home($client)
     );
 });
 

@@ -8,6 +8,11 @@ use Filament\Widgets\ChartWidget;
 
 class ParcelStatusDistributionWidget extends ChartWidget
 {
+    public static function canView(): bool
+    {
+        return ! auth()->user()->isKassir();
+    }
+
     protected static ?int $sort = 3;
 
     protected int|string|array $columnSpan = 'full';
