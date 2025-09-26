@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->unique(['from_currency', 'to_currency', 'effective_date']);
+//            $table->unique(['from_currency', 'to_currency', 'effective_date']);
         });
     }
 
