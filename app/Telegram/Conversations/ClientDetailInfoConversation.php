@@ -89,7 +89,7 @@ class ClientDetailInfoConversation extends Conversation
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.greeting'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
 
             return;
@@ -152,7 +152,7 @@ class ClientDetailInfoConversation extends Conversation
             ]).
             '</blockquote>',
             parse_mode: ParseMode::HTML,
-            reply_markup: ReplyKeyboards::home()
+            reply_markup: ReplyKeyboards::home($client)
         );
         $this->end();
     }
