@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('telegram_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('chat_id')->unique();
+            $table->string('chat_id');
             $table->string('username')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();

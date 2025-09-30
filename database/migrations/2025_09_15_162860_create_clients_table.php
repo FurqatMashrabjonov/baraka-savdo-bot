@@ -19,10 +19,6 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
-            // make phone and chat id unique if deleted_at is null
-            $table->unique(['phone', 'deleted_at']);
-            $table->unique(['chat_id', 'deleted_at']);
         });
     }
 
