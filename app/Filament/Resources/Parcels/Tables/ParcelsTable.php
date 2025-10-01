@@ -19,6 +19,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,7 +36,13 @@ class ParcelsTable
 
                 TextColumn::make('client.full_name')
                     ->label(__('filament.client_name'))
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('client', function (Builder $query) use ($search) {
+                            $query->where('full_name', 'like', "%{$search}%")
+                                  ->orWhere('phone', 'like', "%{$search}%")
+                                  ->orWhere('id', 'like', "%{$search}%");
+                        });
+                    })
                     ->placeholder(__('filament.unassigned'))
                     ->formatStateUsing(fn ($record) => $record->client
                             ? $record->client->full_name.' ('.$record->client->phone.')'
@@ -122,10 +129,34 @@ class ParcelsTable
                 TextColumn::make('created_at')
                     ->label(__('filament.created_at'))
                     ->dateTime('d.m.Y H:i')
+                    ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Filter::make('single_date')
+                    ->form([
+                        DatePicker::make('date')
+                            ->label(__('filament.filter_by_date'))
+                            ->placeholder(__('filament.select_date'))
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['date'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '=', $date),
+                            );
+                    }),
+
+                SelectFilter::make('is_banned')
+                    ->label(__('filament.filter_banned_status'))
+                    ->options([
+                        1 => __('filament.banned'),
+                        0 => __('filament.not_banned'),
+                    ])
+                    ->placeholder(__('filament.all_parcels')),
+
                 SelectFilter::make('status')
                     ->label(__('filament.filter_status'))
                     ->options([
@@ -139,23 +170,6 @@ class ParcelsTable
                 Filter::make('unassigned')
                     ->label(__('filament.filter_unassigned'))
                     ->query(fn (Builder $query) => $query->whereNull('client_id'))
-                    ->toggle(),
-
-                Filter::make('banned')
-                    ->label(__('filament.filter_banned'))
-                    ->query(fn (Builder $query) => $query->where('is_banned', true))
-                    ->toggle(),
-
-                Filter::make('older_than_3_days')
-                    ->label(__('filament.filter_older_than_3_days'))
-                    ->query(fn (Builder $query) => $query
-                        ->whereNotNull('client_id') // Client has entered track number
-                        ->where('created_at', '<', now()->subDays(3)) // More than 3 days ago
-                        ->where(function ($query) {
-                            $query->whereNull('china_uploaded_at') // No China import yet
-                                ->orWhereNull('uzb_uploaded_at'); // Or no Uzbekistan import yet
-                        })
-                    )
                     ->toggle(),
 
                 SelectFilter::make('client')
@@ -174,7 +188,7 @@ class ParcelsTable
                     ->label(__('filament.process_payment'))
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success')
-                    ->visible(fn ($record) => $record->isReadyForPayment())
+                    ->visible(fn ($record) => $record->isReadyForPayment() && ! auth()->user()->isChinaKassir())
                     ->form([
                         Grid::make(2)
                             ->schema([
@@ -532,6 +546,7 @@ class ParcelsTable
                         ->label(__('filament.bulk_payment'))
                         ->icon('heroicon-o-currency-dollar')
                         ->color('success')
+                        ->visible(fn () => ! auth()->user()->isChinaKassir())
                         ->requiresConfirmation()
                         ->modalHeading(__('filament.bulk_payment_modal_title'))
                         ->modalDescription(__('filament.bulk_payment_modal_description'))

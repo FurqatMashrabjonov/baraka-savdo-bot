@@ -32,4 +32,34 @@ return [
     'payment_amount' => 'Payment Amount',
     'payment_amount_usd' => 'Payment (USD)',
     'payment_amount_uzs' => 'Payment (UZS)',
+
+    // China Kassir Stats Widget
+    'todays_parcels' => "Today's Parcels",
+    'parcels_received_today' => 'Parcels received today',
+    'todays_weight' => "Today's Weight",
+    'total_weight_today' => 'Total weight today',
+    'total_parcels' => 'Total Parcels',
+    'all_time_parcels' => 'All time parcels',
+    'total_weight' => 'Total Weight',
+    'all_time_weight' => 'All time weight',
+
+    // 3-Day Parcels Widget
+    'three_day_parcels_widget' => '3-Day Parcels',
+    'three_day_parcels_description' => 'Parcels within last 3 days',
+
+    // Parcel Filters
+    'filter_created_date' => 'Created Date',
+    'filter_by_date' => 'Filter by Date',
+    'three_day_filter' => 'Items older than 3 days',
+    'uploaded_in_china' => 'Uploaded in China',
+    'uploaded_in_uzb' => 'Uploaded in UZB',
+    'show_all_parcels' => 'Show All Parcels',
+    'view_mode' => 'View Mode',
+    'from_date' => 'From Date',
+    'until_date' => 'Until Date',
+    'select_date' => 'Select date',
+    'filter_banned_status' => 'Banned Status',
+    'banned' => 'Banned',
+    'not_banned' => 'Not Banned',
+    'all_parcels' => 'All',
 ];

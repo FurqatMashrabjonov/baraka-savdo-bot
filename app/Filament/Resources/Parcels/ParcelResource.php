@@ -37,7 +37,8 @@ class ParcelResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return ParcelsTable::configure($table);
+        return ParcelsTable::configure($table)
+            ->modifyQueryUsing(fn ($query) => $query->with('client'));
     }
 
     public static function getRelations(): array

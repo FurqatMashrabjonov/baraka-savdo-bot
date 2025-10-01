@@ -357,4 +357,34 @@ return [
     // Kassir Recent Payments Widget
     'my_recent_payments' => 'Mening so\'nggi to\'lovlarim',
     'last_20_payments_processed' => 'Siz qayta ishlagan so\'nggi 20 ta to\'lov',
+
+    // China Kassir Stats Widget
+    'todays_parcels' => 'Bugungi pochtalar',
+    'parcels_received_today' => 'Bugun qabul qilingan pochtalar',
+    'todays_weight' => 'Bugungi og\'irlik',
+    'total_weight_today' => 'Bugungi umumiy og\'irlik',
+    'total_parcels' => 'Jami pochtalar',
+    'all_time_parcels' => 'Barcha vaqtdagi pochtalar',
+    'total_weight' => 'Umumiy og\'irlik',
+    'all_time_weight' => 'Barcha vaqtdagi umumiy og\'irlik',
+
+    // 3-Day Parcels Widget
+    'three_day_parcels_widget' => '3 kunlik pochtalar',
+    'three_day_parcels_description' => 'So\'nggi 3 kun ichidagi pochtalar',
+
+    // Parcel Filters
+    'filter_created_date' => 'Yaratilgan sanasi',
+    'filter_by_date' => 'Sana bo\'yicha filterlash',
+    'three_day_filter' => '3 kundan ortgan tovarlar',
+    'uploaded_in_china' => 'Xitoyda yuklangan',
+    'uploaded_in_uzb' => 'O\'zbekistonda yuklangan',
+    'show_all_parcels' => 'Barcha pochtalarni ko\'rsatish',
+    'view_mode' => 'Ko\'rish rejimi',
+    'from_date' => 'Boshlanish sanasi',
+    'until_date' => 'Tugash sanasi',
+    'select_date' => 'Sanani tanlang',
+    'filter_banned_status' => 'Ta\'qiq holati',
+    'banned' => 'Ta\'qiqlangan',
+    'not_banned' => 'Ta\'qiqlanmagan',
+    'all_parcels' => 'Hammasi',
 ];

@@ -8,9 +8,19 @@ class CustomDashboard extends BaseDashboard
 {
     public function getWidgets(): array
     {
+        // Specific widgets for China Kassir
+        if (auth()->user()->isChinaKassir()) {
+            return [
+                \App\Filament\Widgets\ChinaKassirStatsWidget::class,
+                \App\Filament\Widgets\ThreeDayParcelsWidget::class,
+            ];
+        }
+
+        // General kassir widgets (for UZB kassir and other kassir roles)
         if (auth()->user()->isKassir()) {
             return [
                 \App\Filament\Widgets\KassirStatsWidget::class,
+                \App\Filament\Widgets\ThreeDayParcelsWidget::class,
                 \App\Filament\Widgets\KassirRecentPaymentsWidget::class,
             ];
         }
@@ -18,6 +28,7 @@ class CustomDashboard extends BaseDashboard
         // Admin widgets (existing ones)
         return [
             \App\Filament\Widgets\ParcelStatsWidget::class,
+            \App\Filament\Widgets\ThreeDayParcelsWidget::class,
             \App\Filament\Widgets\ClientStatsWidget::class,
             \App\Filament\Widgets\ParcelStatusDistributionWidget::class,
             \App\Filament\Widgets\ParcelActivityChartWidget::class,

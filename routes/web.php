@@ -52,3 +52,5 @@ Route::middleware(['auth', 'signed'])->group(function () {
         return redirect(route('home'));
     })->name('verification.verify');
 });
+
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);

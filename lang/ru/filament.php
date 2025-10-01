@@ -17,7 +17,14 @@ return [
 
     // Parcel Fields
     'track_number' => 'Трек-номер',
-    'weight' => 'Вес (кг)',
+    'total_weight' => 'Общий вес',
+    'all_time_weight' => 'Общий вес за все время',
+
+    // 3-Day Parcels Widget
+    'three_day_parcels_widget' => 'Посылки за 3 дня',
+    'three_day_parcels_description' => 'Посылки за последние 3 дня',
+
+    // Parcel Filters => 'Вес (кг)',
     'is_banned' => 'Заблокировано',
     'china_uploaded_at' => 'Время прибытия в Китай',
     'uzb_uploaded_at' => 'Время прибытия в Узбекистан',
@@ -357,4 +364,30 @@ return [
     // Kassir Recent Payments Widget
     'my_recent_payments' => 'Мои недавние платежи',
     'last_20_payments_processed' => 'Последние 20 платежей, которые вы обработали',
+
+    // China Kassir Stats Widget
+    'todays_parcels' => 'Посылки сегодня',
+    'parcels_received_today' => 'Посылки получены сегодня',
+    'todays_weight' => 'Вес сегодня',
+    'total_weight_today' => 'Общий вес сегодня',
+    'total_parcels' => 'Всего посылок',
+    'all_time_parcels' => 'Всего посылок за всё время',
+    'total_weight' => 'Общий вес',
+    'all_time_weight' => 'Общий вес за всё время',
+
+    // Parcel Filters
+    'filter_created_date' => 'Дата создания',
+    'filter_by_date' => 'Фильтр по дате',
+    'three_day_filter' => 'Товары старше 3 дней',
+    'uploaded_in_china' => 'Загружено в Китае',
+    'uploaded_in_uzb' => 'Загружено в Узбекистане',
+    'show_all_parcels' => 'Показать все посылки',
+    'view_mode' => 'Режим просмотра',
+    'from_date' => 'С даты',
+    'until_date' => 'До даты',
+    'select_date' => 'Выберите дату',
+    'filter_banned_status' => 'Статус блокировки',
+    'banned' => 'Заблокировано',
+    'not_banned' => 'Не заблокировано',
+    'all_parcels' => 'Все',
 ];
