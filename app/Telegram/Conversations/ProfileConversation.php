@@ -132,7 +132,7 @@ class ProfileConversation extends Conversation
 
         $bot->sendMessage(
             text: __('telegram.phone.changed'),
-            reply_markup: ReplyKeyboards::home()
+            reply_markup: ReplyKeyboards::home($client)
         );
         $this->end();
     }
