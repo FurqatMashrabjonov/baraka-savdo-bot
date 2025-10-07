@@ -22,6 +22,30 @@ class ThreeDayParcelsResource extends Resource
         return __('filament.three_day_parcels_widget');
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::query()
+            ->whereNull('china_uploaded_at') // Not imported from China Excel
+            ->whereNotNull('client_id') // Client has added track number
+            ->where('created_at', '>=', now()->subDays(3)) // Within last 3 days
+            ->count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        $count = static::getNavigationBadge();
+        
+        if ($count > 10) {
+            return 'danger'; // Red for high numbers
+        } elseif ($count > 5) {
+            return 'warning'; // Yellow for medium numbers
+        } elseif ($count > 0) {
+            return 'primary'; // Blue for low numbers
+        }
+        
+        return 'gray'; // Gray for zero
+    }
+
     public static function getPluralModelLabel(): string
     {
         return __('filament.three_day_parcels_widget');

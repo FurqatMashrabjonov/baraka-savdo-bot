@@ -134,4 +134,21 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | SSH Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for SSH deployment connections.
+    |
+    */
+
+    'ssh' => [
+        'host' => env('SSH_HOST'),
+        'username' => env('SSH_USERNAME'),
+        'port' => env('SSH_PORT', 22),
+        'password' => env('SSH_PASSWORD'),
+    ],
+
 ];
