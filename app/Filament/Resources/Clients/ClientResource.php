@@ -16,6 +16,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ClientResource extends Resource
 {
@@ -24,10 +26,28 @@ class ClientResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $navigationLabel = null;
-    
+
     public static function getNavigationLabel(): string
     {
         return __('filament.clients');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return false;
+        }
+
+        // Hide Clients resource from kassir roles (both china and uzb)
+        $hasKassirRole = DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('model_has_roles.model_id', $user->id)
+            ->where('model_has_roles.model_type', get_class($user))
+            ->whereIn('roles.name', ['kassir_china', 'kassir_uzb'])
+            ->exists();
+
+        return ! $hasKassirRole; // Hide for kassir roles, show for others
     }
 
     public static function getRecordTitle($record): string
