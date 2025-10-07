@@ -57,7 +57,7 @@ class ParcelImportService
                                 $parcel->china_uploaded_at = now();
 
                                 if ($parcel->status === ParcelStatus::CREATED) {
-                                    $parcel->status = ParcelStatus::ARRIVED_CHINA;
+                                    $parcel->status = ParcelStatus::IN_WAREHOUSE; // Omborda
                                 }
 
                                 $parcel->save();
@@ -67,7 +67,7 @@ class ParcelImportService
                                     'track_number' => $trackNumber,
                                     'weight' => $weight,
                                     'is_banned' => $isBanned,
-                                    'status' => ParcelStatus::ARRIVED_CHINA->value,
+                                    'status' => ParcelStatus::IN_WAREHOUSE->value, // Omborda
                                     'china_uploaded_at' => now(),
                                     'created_at' => now(),
                                     'updated_at' => now(),

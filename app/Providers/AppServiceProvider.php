@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,14 +22,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (App::environment('production', 'local')) {
+        // if (App::environment('production', 'local')) {
 
-            URL::forceScheme('https');
-        }
+        //     URL::forceScheme('https');
+        // }
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['uz','ru']);
+                ->locales(['uz', 'ru']);
         });
     }
 }

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('china_addresses', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->string('address_template')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+        Schema::table('parcels', function (Blueprint $table) {
+            $table->string('prepayment_status')->default('pending')->after('payment_notes');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('china_addresses');
+        Schema::table('parcels', function (Blueprint $table) {
+            $table->dropColumn('prepayment_status');
+        });
     }
 };

@@ -25,6 +25,7 @@ class Parcel extends Model
         'payment_notes',
         'processed_by',
         'payment_processed_by',
+        'prepayment_status',
     ];
 
     protected function casts(): array
@@ -39,6 +40,7 @@ class Parcel extends Model
             'payment_amount_usd' => 'decimal:2',
             'payment_amount_uzs' => 'decimal:2',
             'exchange_rate' => 'decimal:4',
+            'prepayment_status' => \App\Enums\PrepaymentStatus::class,
         ];
     }
 

@@ -6,6 +6,8 @@ enum ParcelStatus: string
 {
     case CREATED = 'created';
     case ARRIVED_CHINA = 'arrived_china';
+    case IN_WAREHOUSE = 'in_warehouse'; // Omborda
+    case DISPATCHED = 'dispatched'; // Yo'lga chiqdi
     case ARRIVED_UZB = 'arrived_uzb';
     case DELIVERED = 'delivered';
 
