@@ -2,20 +2,26 @@
 
 namespace App\Livewire;
 
+use App\Enums\ParcelStatus;
 use App\Models\Client;
 use App\Models\Parcel;
-use App\Enums\ParcelStatus;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
     public ?Client $client = null;
+
     public $parcels = [];
+
     public $selectedTab = 'unpaid';
+
     public $selectedStatus = 'all';
+
     public $searchQuery = '';
+
     public $selectedParcels = [];
+
     public $selectAll = false;
 
     public function mount()
@@ -39,22 +45,22 @@ class Dashboard extends Component
 
     public function loadParcels()
     {
-        if (!$this->client) {
+        if (! $this->client) {
             return;
         }
 
         $query = $this->client->parcels();
 
         // Filter by payment status - for now skip this filter since we don't have is_paid column
-//        if ($this->selectedTab === 'paid') {
-//            $query->where('is_paid', true);
-//        } else {
-//            $query->where('is_paid', false);
-//        }
+        //        if ($this->selectedTab === 'paid') {
+        //            $query->where('is_paid', true);
+        //        } else {
+        //            $query->where('is_paid', false);
+        //        }
 
         // Filter by status
         if ($this->selectedStatus !== 'all') {
-            $statusValue = match($this->selectedStatus) {
+            $statusValue = match ($this->selectedStatus) {
                 'created' => ParcelStatus::CREATED->value,
                 'arrived_china' => ParcelStatus::ARRIVED_CHINA->value,
                 'arrived_uzb' => ParcelStatus::ARRIVED_UZB->value,
@@ -66,7 +72,7 @@ class Dashboard extends Component
 
         // Search filter
         if ($this->searchQuery) {
-            $query->where('track_number', 'like', '%' . $this->searchQuery . '%');
+            $query->where('track_number', 'like', '%'.$this->searchQuery.'%');
         }
 
         $this->parcels = $query->get();

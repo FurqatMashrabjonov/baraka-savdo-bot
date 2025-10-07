@@ -20,6 +20,7 @@ class ParcelResource extends Resource
     {
         return __('filament.parcels');
     }
+
     protected static string|null|\BackedEnum $navigationIcon = Heroicon::OutlinedArchiveBox;
 
     public static function getPluralModelLabel(): string
@@ -55,8 +56,8 @@ class ParcelResource extends Resource
 
                     if ($hasKassirChinaRole) {
                         $query->whereNotNull('china_uploaded_at')
-                              ->whereNull('uzb_uploaded_at')
-                              ->orderBy('china_uploaded_at', 'desc');
+                            ->whereNull('uzb_uploaded_at')
+                            ->orderBy('china_uploaded_at', 'desc');
                     }
                 }
 

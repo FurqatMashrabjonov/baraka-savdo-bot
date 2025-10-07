@@ -9,13 +9,18 @@ use Illuminate\Support\Facades\Http;
 class EskizSmsClient
 {
     private string $token;
+
     private string $baseUrl;
+
     private string $email;
+
     private string $password;
+
     /**
      * @throws ConnectionException
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->baseUrl = config('eskiz.api_url');
         $this->email = config('eskiz.email');
         $this->password = config('eskiz.password');
@@ -31,8 +36,8 @@ class EskizSmsClient
     private function getToken(): string
     {
         return Cache::remember('eskiz_token', config('eskiz.token_lifetime'), function () {
-            $response = Http::post($this->baseUrl . '/auth/login', [
-                'email'    => $this->email,
+            $response = Http::post($this->baseUrl.'/auth/login', [
+                'email' => $this->email,
                 'password' => $this->password,
             ])->throw();
 
@@ -47,14 +52,14 @@ class EskizSmsClient
     {
         return $this->request('/message/sms/send', 'post', [
             'mobile_phone' => $number,
-            'message'      => $this->generateMessage($code),
-            'from'         => config('eskiz.from'),
+            'message' => $this->generateMessage($code),
+            'from' => config('eskiz.from'),
         ]);
     }
 
     private function generateMessage(int $code): string
     {
-        return str_replace('%d', (string)$code, config('eskiz.eskiz_template'));
+        return str_replace('%d', (string) $code, config('eskiz.eskiz_template'));
     }
 
     private function normalizeMessage(string $message): string

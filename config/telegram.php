@@ -1,5 +1,5 @@
 <?php
 
 return [
-  'channel_username' => 'baraka_test',
+    'channel_username' => 'baraka_test',
 ];

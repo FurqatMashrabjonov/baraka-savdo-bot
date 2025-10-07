@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -55,8 +54,8 @@ class Client extends Model
 
     public function isComplete(): bool
     {
-        return !empty($this->full_name) &&
-               !empty($this->phone) &&
-               !empty($this->address);
+        return ! empty($this->full_name) &&
+               ! empty($this->phone) &&
+               ! empty($this->address);
     }
 }

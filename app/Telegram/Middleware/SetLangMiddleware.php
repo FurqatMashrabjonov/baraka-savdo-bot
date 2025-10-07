@@ -14,9 +14,8 @@ class SetLangMiddleware
             ->where('chat_id', $bot->chatId())
             ->first();
 
-        if (is_null($telegramAccount))
-        {
-            //default language is uz
+        if (is_null($telegramAccount)) {
+            // default language is uz
             App::setLocale('uz');
         } else {
             App::setLocale($telegramAccount->lang ?? 'uz');

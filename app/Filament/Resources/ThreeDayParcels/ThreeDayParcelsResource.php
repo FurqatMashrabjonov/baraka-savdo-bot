@@ -98,8 +98,9 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['track_number'] ?? null) {
-                            $indicators['track_number'] = 'Trek raqami: ' . $data['track_number'];
+                            $indicators['track_number'] = 'Trek raqami: '.$data['track_number'];
                         }
+
                         return $indicators;
                     }),
 
@@ -120,8 +121,9 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['client_id'] ?? null) {
-                            $indicators['client_id'] = 'Klient IDsi: ' . $data['client_id'];
+                            $indicators['client_id'] = 'Klient IDsi: '.$data['client_id'];
                         }
+
                         return $indicators;
                     }),
 
@@ -148,11 +150,12 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Dan: ' . $data['created_from'];
+                            $indicators['created_from'] = 'Dan: '.$data['created_from'];
                         }
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Gacha: ' . $data['created_until'];
+                            $indicators['created_until'] = 'Gacha: '.$data['created_until'];
                         }
+
                         return $indicators;
                     }),
             ])
@@ -160,7 +163,7 @@ class ThreeDayParcelsResource extends Resource
             ->modifyQueryUsing(fn ($query) => $query
                 ->whereNull('china_uploaded_at') // Not imported from China Excel
                 ->whereNotNull('client_id') // Client has added track number
-                ->where('created_at', '>=', now()->subDays(3)) // Within last 3 days
+                ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
                 ->with('client')
             )
             ->defaultSort('created_at', 'desc')

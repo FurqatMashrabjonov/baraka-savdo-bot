@@ -20,7 +20,7 @@ class ClientInfolist
                         TextEntry::make('address')->label('Manzil'),
                         TextEntry::make('created_at')->label('Ro\'yxatga olingan vaqti')->dateTime(),
                         TextEntry::make('telegram.username')->label('Telegram foydalanuvchi nomi'),
-                ]),
+                    ]),
                 Section::make('Telegram ma\'lumotlari')
                     ->inlineLabel()
                     ->schema([

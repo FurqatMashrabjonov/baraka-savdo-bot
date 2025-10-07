@@ -4,14 +4,15 @@ namespace App\Livewire\TelegramWebApp;
 
 use App\Models\Client;
 use App\Models\Parcel;
-use App\Enums\ParcelStatus;
 use Illuminate\Support\Facades\App;
 use Livewire\Component;
 
 class ParcelDetail extends Component
 {
     public ?Client $client = null;
+
     public ?Parcel $parcel = null;
+
     public $progressSteps = [];
 
     public function mount($parcelId)
@@ -40,7 +41,7 @@ class ParcelDetail extends Component
 
     public function goBack()
     {
-        return $this->redirect('/telegram-web-app/dashboard?uid=' . $this->client->uid);
+        return $this->redirect('/telegram-web-app/dashboard?uid='.$this->client->uid);
     }
 
     public function render()

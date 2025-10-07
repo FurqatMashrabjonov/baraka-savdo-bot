@@ -5,12 +5,12 @@ namespace App\Services;
 use App\Enums\ParcelStatus;
 use App\Models\Parcel;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ParcelImportService
 {
     protected array $importResults = [];
+
     protected int $chunkSize = 100; // Process in batches of 100
 
     public function importChinaExcel(string $filePath): array
@@ -34,7 +34,7 @@ class ParcelImportService
             $chunks = array_chunk($dataRows, $this->chunkSize);
 
             foreach ($chunks as $chunkIndex => $chunk) {
-                DB::transaction(function () use ($chunk, &$results, $chunkIndex) {
+                DB::transaction(function () use ($chunk, &$results) {
                     $batch = [];
 
                     foreach ($chunk as $row) {
@@ -45,8 +45,8 @@ class ParcelImportService
                         }
 
                         $trackNumber = trim($row[0]);
-                        $weight = !empty($row[1]) ? (float) $row[1] : null;
-                        $isBanned = !empty($row[2]) ? (bool) $row[2] : false;
+                        $weight = ! empty($row[1]) ? (float) $row[1] : null;
+                        $isBanned = ! empty($row[2]) ? (bool) $row[2] : false;
 
                         try {
                             $parcel = Parcel::where('track_number', $trackNumber)->lockForUpdate()->first();
@@ -75,12 +75,12 @@ class ParcelImportService
                                 $results['created']++;
                             }
                         } catch (\Exception $e) {
-                            $results['errors'][] = "Trek raqami {$trackNumber}: " . $e->getMessage();
+                            $results['errors'][] = "Trek raqami {$trackNumber}: ".$e->getMessage();
                         }
                     }
 
                     // Bulk insert new parcels
-                    if (!empty($batch)) {
+                    if (! empty($batch)) {
                         Parcel::insert($batch);
                     }
                 }, 5); // Retry transaction up to 5 times
@@ -143,7 +143,7 @@ class ParcelImportService
                                 $results['errors'][] = "Trek raqami topilmadi: {$trackNumber}";
                             }
                         } catch (\Exception $e) {
-                            $results['errors'][] = "Trek raqami {$trackNumber}: " . $e->getMessage();
+                            $results['errors'][] = "Trek raqami {$trackNumber}: ".$e->getMessage();
                         }
                     }
                 }, 5); // Retry transaction up to 5 times
@@ -165,10 +165,10 @@ class ParcelImportService
             $summary .= "Yangi yaratilgan: {$results['created']}\n";
             $summary .= "Yangilangan: {$results['updated']}";
 
-            if (!empty($results['errors'])) {
-                $summary .= "\n\nXatolar:\n" . implode("\n", array_slice($results['errors'], 0, 5));
+            if (! empty($results['errors'])) {
+                $summary .= "\n\nXatolar:\n".implode("\n", array_slice($results['errors'], 0, 5));
                 if (count($results['errors']) > 5) {
-                    $summary .= "\n... va yana " . (count($results['errors']) - 5) . " ta xato";
+                    $summary .= "\n... va yana ".(count($results['errors']) - 5).' ta xato';
                 }
             }
         } else {
@@ -176,10 +176,10 @@ class ParcelImportService
             $summary .= "Yangilangan: {$results['updated']}\n";
             $summary .= "Topilmagan: {$results['not_found']}";
 
-            if (!empty($results['errors'])) {
-                $summary .= "\n\nXatolar:\n" . implode("\n", array_slice($results['errors'], 0, 5));
+            if (! empty($results['errors'])) {
+                $summary .= "\n\nXatolar:\n".implode("\n", array_slice($results['errors'], 0, 5));
                 if (count($results['errors']) > 5) {
-                    $summary .= "\n... va yana " . (count($results['errors']) - 5) . " ta xato";
+                    $summary .= "\n... va yana ".(count($results['errors']) - 5).' ta xato';
                 }
             }
         }
@@ -198,7 +198,7 @@ class ParcelImportService
             }
         } catch (\Exception $e) {
             // Log the error but don't throw - file deletion failure shouldn't break the import
-            \Log::warning('Failed to delete uploaded file: ' . $filePath, ['error' => $e->getMessage()]);
+            \Log::warning('Failed to delete uploaded file: '.$filePath, ['error' => $e->getMessage()]);
         }
     }
 }

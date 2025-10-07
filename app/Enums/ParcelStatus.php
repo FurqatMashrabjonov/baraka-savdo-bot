@@ -11,7 +11,6 @@ enum ParcelStatus: string
     case ARRIVED_UZB = 'arrived_uzb';
     case DELIVERED = 'delivered';
 
-
     public function getLabel(?string $locale = null): string
     {
         return __("telegram.parcel_statuses.{$this->value}");

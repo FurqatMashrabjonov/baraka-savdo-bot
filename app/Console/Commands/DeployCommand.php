@@ -34,9 +34,10 @@ class DeployCommand extends Command
         $sshPort = config('app.ssh.port');
         $sshPassword = config('app.ssh.password');
 
-        if (!$sshHost || !$sshUsername || !$sshPort || !$sshPassword) {
+        if (! $sshHost || ! $sshUsername || ! $sshPort || ! $sshPassword) {
             $this->error('❌ SSH credentials not found in environment variables.');
             $this->error('Please ensure SSH_HOST, SSH_USERNAME, SSH_PORT, and SSH_PASSWORD are set in .env file.');
+
             return 1;
         }
 
@@ -44,31 +45,33 @@ class DeployCommand extends Command
         $deploymentCommands = [
             'cd public_html',
             'git pull origin main',
-//            'composer install --no-dev --optimize-autoloader',
+            //            'composer install --no-dev --optimize-autoloader',
             'php artisan config:cache',
             'php artisan route:cache',
             'php artisan view:cache',
             'php artisan migrate --force',
-//            'php artisan queue:restart',
-//            'npm install --production',
-//            'npm run build',
+            //            'php artisan queue:restart',
+            //            'npm install --production',
+            //            'npm run build',
         ];
 
         $this->info("📡 Connecting to {$sshUsername}@{$sshHost}:{$sshPort}");
 
         if ($this->option('dry-run')) {
             $this->warn('🔍 DRY RUN MODE - Commands will not be executed');
-            $this->info('SSH Connection: sshpass -p "***" ssh -p ' . $sshPort . ' ' . $sshUsername . '@' . $sshHost);
+            $this->info('SSH Connection: sshpass -p "***" ssh -p '.$sshPort.' '.$sshUsername.'@'.$sshHost);
             $this->info('Commands to execute:');
             foreach ($deploymentCommands as $command) {
                 $this->line("  → {$command}");
             }
+
             return 0;
         }
 
         // Check if sshpass is available
-        if (!$this->commandExists('sshpass')) {
+        if (! $this->commandExists('sshpass')) {
             $this->error('❌ sshpass command not found. Please install it: sudo apt-get install sshpass');
+
             return 1;
         }
 
@@ -90,7 +93,7 @@ class DeployCommand extends Command
             '-o',
             'UserKnownHostsFile=/dev/null',
             "{$sshUsername}@{$sshHost}",
-            $remoteCommands
+            $remoteCommands,
         ];
 
         $this->info('🔄 Executing deployment commands...');
@@ -100,7 +103,7 @@ class DeployCommand extends Command
         $process->setTimeout(300); // 5 minutes timeout
 
         $process->run(function ($type, $buffer) {
-            if (Process::ERR === $type) {
+            if ($type === Process::ERR) {
                 $this->error($buffer);
             } else {
                 $this->line($buffer);
@@ -109,10 +112,12 @@ class DeployCommand extends Command
 
         if ($process->isSuccessful()) {
             $this->info('✅ Deployment completed successfully!');
+
             return 0;
         } else {
             $this->error('❌ Deployment failed!');
-            $this->error('Exit code: ' . $process->getExitCode());
+            $this->error('Exit code: '.$process->getExitCode());
+
             return 1;
         }
     }

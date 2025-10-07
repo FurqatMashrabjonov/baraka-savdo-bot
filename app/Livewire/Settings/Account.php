@@ -2,16 +2,15 @@
 
 namespace App\Livewire\Settings;
 
-use App\Models\User;
-use App\Support\Toast;
-use Illuminate\Container\Attributes\CurrentUser;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Validate;
-use Illuminate\Validation\Rule;
-use Livewire\Component;
 use App\Livewire\Concerns\HasToast;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
 
 class Account extends Component
 {
@@ -53,13 +52,12 @@ class Account extends Component
 
         $user->fill($validated);
 
-        // If the email changed we need to make it unverified, for security reasons 
+        // If the email changed we need to make it unverified, for security reasons
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
         $user->save();
-
 
         $this->toastSuccess('Your account has been updated.');
     }
@@ -88,6 +86,7 @@ class Account extends Component
 
         $this->toastSuccess('Your password has been updated.');
     }
+
     public function render()
     {
         return view('livewire.settings.account');
