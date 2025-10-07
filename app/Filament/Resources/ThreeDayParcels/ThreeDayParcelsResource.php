@@ -25,30 +25,6 @@ class ThreeDayParcelsResource extends Resource
         return __('filament.three_day_parcels_widget');
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::query()
-            ->whereNull('china_uploaded_at') // Not imported from China Excel
-            ->whereNotNull('client_id') // Client has added track number
-            ->where('created_at', '>=', now()->subDays(3)) // Within last 3 days
-            ->count();
-    }
-
-    public static function getNavigationBadgeColor(): string|array|null
-    {
-        $count = static::getNavigationBadge();
-
-        if ($count > 10) {
-            return 'danger'; // Red for high numbers
-        } elseif ($count > 5) {
-            return 'warning'; // Yellow for medium numbers
-        } elseif ($count > 0) {
-            return 'primary'; // Blue for low numbers
-        }
-
-        return 'gray'; // Gray for zero
-    }
-
     public static function getPluralModelLabel(): string
     {
         return __('filament.three_day_parcels_widget');
@@ -98,9 +74,8 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['track_number'] ?? null) {
-                            $indicators['track_number'] = 'Trek raqami: '.$data['track_number'];
+                            $indicators['track_number'] = 'Trek raqami: ' . $data['track_number'];
                         }
-
                         return $indicators;
                     }),
 
@@ -121,9 +96,8 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['client_id'] ?? null) {
-                            $indicators['client_id'] = 'Klient IDsi: '.$data['client_id'];
+                            $indicators['client_id'] = 'Klient IDsi: ' . $data['client_id'];
                         }
-
                         return $indicators;
                     }),
 
@@ -150,22 +124,21 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Dan: '.$data['created_from'];
+                            $indicators['created_from'] = 'Dan: ' . $data['created_from'];
                         }
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Gacha: '.$data['created_until'];
+                            $indicators['created_until'] = 'Gacha: ' . $data['created_until'];
                         }
-
                         return $indicators;
                     }),
             ])
             ->filtersFormColumns(2)
             ->modifyQueryUsing(fn ($query) => $query
-                ->whereNull('china_uploaded_at') // Not imported from China Excel
-                ->whereNotNull('client_id') // Client has added track number
-                ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
-                ->with('client')
-            )
+    ->whereNull('china_uploaded_at') // Not imported from China Excel
+    ->whereNotNull('client_id') // Client has added track number
+    ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
+    ->with('client')
+)
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('Hech qanday 3 kunlik pochta topilmadi')
             ->emptyStateDescription('Oxirgi 3 kun ichida kiritilgan va Xitoydan import qilinmagan pochtalar yo\'q.');
