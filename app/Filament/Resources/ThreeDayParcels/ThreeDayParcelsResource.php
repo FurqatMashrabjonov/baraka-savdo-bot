@@ -34,7 +34,7 @@ class ThreeDayParcelsResource extends Resource
     public static function getNavigationBadgeColor(): string|array|null
     {
         $count = static::getNavigationBadge();
-        
+
         if ($count > 10) {
             return 'danger'; // Red for high numbers
         } elseif ($count > 5) {
@@ -42,7 +42,7 @@ class ThreeDayParcelsResource extends Resource
         } elseif ($count > 0) {
             return 'primary'; // Blue for low numbers
         }
-        
+
         return 'gray'; // Gray for zero
     }
 
