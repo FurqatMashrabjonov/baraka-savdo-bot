@@ -18,7 +18,7 @@ class ThreeDayParcelsResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
-    protected static ?string $navigationLabel = null;
+    protected static ?int $navigationSort = 3;
 
     public static function getNavigationLabel(): string
     {
@@ -37,32 +37,56 @@ class ThreeDayParcelsResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $isUzbKassir = auth()->user()?->isUzbKassir() ?? false;
+
+        $columns = [
+            TextColumn::make('track_number')
+                ->label(__('filament.track_number'))
+                ->searchable()
+                ->copyable()
+                ->copyMessage(__('filament.track_number_copied'))
+                ->sortable(),
+
+            TextColumn::make('created_at')
+                ->label(__('filament.bot_entry_date'))
+                ->dateTime('d.m.Y H:i')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('client_id')
+                ->label(__('filament.client_id'))
+                ->sortable()
+                ->searchable(),
+        ];
+
+        // Add detailed client info only for UZB kassir
+        if ($isUzbKassir) {
+            $columns[] = TextColumn::make('client.full_name')
+                ->label(__('filament.full_name'))
+                ->searchable()
+                ->sortable()
+                ->getStateUsing(fn ($record) => $record->client?->full_name ?? '—');
+
+            $columns[] = TextColumn::make('client.phone')
+                ->label(__('filament.phone'))
+                ->searchable()
+                ->getStateUsing(fn ($record) => $record->client?->phone ?? '—');
+
+            $columns[] = TextColumn::make('client.address')
+                ->label(__('filament.address'))
+                ->searchable()
+                ->wrap()
+                ->getStateUsing(fn ($record) => $record->client?->address ?? '—');
+        }
+
         return $table
-            ->columns([
-                TextColumn::make('track_number')
-                    ->label(__('filament.track_number'))
-                    ->searchable()
-                    ->copyable()
-                    ->copyMessage(__('filament.track_number_copied'))
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Botga kiritilgan sana')
-                    ->dateTime('d.m.Y H:i')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('client_id')
-                    ->label('Klient IDsi')
-                    ->sortable()
-                    ->searchable(),
-            ])
+            ->columns($columns)
             ->filters([
                 Filter::make('track_number')
                     ->form([
                         \Filament\Forms\Components\TextInput::make('track_number')
                             ->label(__('filament.track_number'))
-                            ->placeholder('Trek raqami bo\'yicha qidirish'),
+                            ->placeholder(__('filament.search_by_track_number')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -74,16 +98,17 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['track_number'] ?? null) {
-                            $indicators['track_number'] = 'Trek raqami: ' . $data['track_number'];
+                            $indicators['track_number'] = __('filament.track_number_filter').$data['track_number'];
                         }
+
                         return $indicators;
                     }),
 
                 Filter::make('client_id')
                     ->form([
                         \Filament\Forms\Components\TextInput::make('client_id')
-                            ->label('Klient IDsi')
-                            ->placeholder('Klient ID bo\'yicha qidirish')
+                            ->label(__('filament.client_id'))
+                            ->placeholder(__('filament.search_by_client_id'))
                             ->numeric(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -96,19 +121,20 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['client_id'] ?? null) {
-                            $indicators['client_id'] = 'Klient IDsi: ' . $data['client_id'];
+                            $indicators['client_id'] = __('filament.client_id_filter').$data['client_id'];
                         }
+
                         return $indicators;
                     }),
 
                 Filter::make('created_at_range')
                     ->form([
                         DatePicker::make('created_from')
-                            ->label('Boshlanish sanasi')
-                            ->placeholder('Sanani tanlang'),
+                            ->label(__('filament.created_from'))
+                            ->placeholder(__('filament.select_date')),
                         DatePicker::make('created_until')
-                            ->label('Tugash sanasi')
-                            ->placeholder('Sanani tanlang'),
+                            ->label(__('filament.created_until'))
+                            ->placeholder(__('filament.select_date')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -124,24 +150,25 @@ class ThreeDayParcelsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
                         if ($data['created_from'] ?? null) {
-                            $indicators['created_from'] = 'Dan: ' . $data['created_from'];
+                            $indicators['created_from'] = __('filament.from_filter').$data['created_from'];
                         }
                         if ($data['created_until'] ?? null) {
-                            $indicators['created_until'] = 'Gacha: ' . $data['created_until'];
+                            $indicators['created_until'] = __('filament.until_filter').$data['created_until'];
                         }
+
                         return $indicators;
                     }),
             ])
             ->filtersFormColumns(2)
             ->modifyQueryUsing(fn ($query) => $query
-    ->whereNull('china_uploaded_at') // Not imported from China Excel
-    ->whereNotNull('client_id') // Client has added track number
-    ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
-    ->with('client')
-)
+                ->whereNull('china_uploaded_at') // Not imported from China Excel
+                ->whereNotNull('client_id') // Client has added track number
+                ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
+                ->with('client')
+            )
             ->defaultSort('created_at', 'desc')
-            ->emptyStateHeading('Hech qanday 3 kunlik pochta topilmadi')
-            ->emptyStateDescription('Oxirgi 3 kun ichida kiritilgan va Xitoydan import qilinmagan pochtalar yo\'q.');
+            ->emptyStateHeading(__('filament.no_three_day_parcels_found'))
+            ->emptyStateDescription(__('filament.no_three_day_parcels_description'));
     }
 
     public static function getRelations(): array

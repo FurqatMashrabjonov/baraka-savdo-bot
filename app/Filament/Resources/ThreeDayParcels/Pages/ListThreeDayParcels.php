@@ -12,7 +12,7 @@ class ListThreeDayParcels extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // No actions needed
+            // No create action - this is a filtered view only
         ];
     }
 }

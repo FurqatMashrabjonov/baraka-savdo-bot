@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\ParcelStatus;
 use App\Models\Parcel;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -29,30 +30,23 @@ class KassirRecentPaymentsWidget extends BaseWidget
                     ->limit(20)
             )
             ->columns([
-                TextColumn::make('parcel_number')
-                    ->label(__('filament.parcel_number'))
+                TextColumn::make('track_number')
+                    ->label(__('filament.track_number'))
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('client_name')
-                    ->label(__('filament.client_name'))
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('client_phone')
-                    ->label(__('filament.phone'))
-                    ->searchable(),
 
                 TextColumn::make('status')
                     ->label(__('filament.status'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'received' => 'danger',
-                        'storage' => 'warning',
-                        'paid' => 'success',
-                        'delivered' => 'primary',
+                    ->color(fn ($state): string => $state instanceof ParcelStatus ? match ($state) {
+                        ParcelStatus::CREATED => 'gray',
+                        ParcelStatus::ARRIVED_CHINA => 'info',
+                        ParcelStatus::IN_WAREHOUSE => 'warning',
+                        ParcelStatus::DISPATCHED => 'primary',
+                        ParcelStatus::ARRIVED_UZB => 'warning',
+                        ParcelStatus::DELIVERED => 'success',
                         default => 'gray',
-                    }),
+                    } : 'gray'),
 
                 TextColumn::make('payment_amount_usd')
                     ->label(__('filament.payment_amount_usd'))
