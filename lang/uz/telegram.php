@@ -77,6 +77,7 @@ Masalan: <i><u>CN123456789US</u></i>',
         'arrived_china' => 'Xitoyga yetib keldi',
         'arrived_uzb' => 'O\'zbekistonga yetib keldi',
         'delivered' => 'Yetkazib berildi',
+        'cancelled' => 'Bekor qilindi',
     ],
     'china_address_not_available' => 'Xitoy manzili vaqtincha mavjud emas. Qo\'llab-quvvatlash xizmatiga murojaat qiling.',
 ];

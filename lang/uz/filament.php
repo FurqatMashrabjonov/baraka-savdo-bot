@@ -353,4 +353,11 @@ return [
     'until_filter' => 'Gacha: ',
     'no_three_day_parcels_found' => 'Hech qanday 3 kunlik pochta topilmadi',
     'no_three_day_parcels_description' => 'Oxirgi 3 kun ichida kiritilgan va Xitoydan import qilinmagan pochtalar yo\'q.',
+
+    // Cancel Action
+    'cancel_parcel' => 'Bekor qilish',
+    'cancel_parcel_confirmation' => 'Bu pochtani bekor qilishni xohlaysizmi?',
+    'cancel_parcel_description' => 'Bu pochta bekor qilingan deb belgilanadi. Bu amalni ortga qaytarib bo\'lmaydi.',
+    'parcel_cancelled_successfully' => 'Pochta muvaffaqiyatli bekor qilindi',
+    'cannot_cancel_processed_parcel' => 'Qayta ishlangan pochtani bekor qilib bo\'lmaydi',
 ];

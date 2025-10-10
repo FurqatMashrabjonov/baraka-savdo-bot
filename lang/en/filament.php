@@ -75,4 +75,11 @@ return [
     'until_filter' => 'Until: ',
     'no_three_day_parcels_found' => 'No 3-day parcels found',
     'no_three_day_parcels_description' => 'There are no parcels entered in the last 3 days and not imported from China.',
+
+    // Cancel Action
+    'cancel_parcel' => 'Cancel',
+    'cancel_parcel_confirmation' => 'Are you sure you want to cancel this parcel?',
+    'cancel_parcel_description' => 'This parcel will be marked as cancelled. This action cannot be undone.',
+    'parcel_cancelled_successfully' => 'Parcel cancelled successfully',
+    'cannot_cancel_processed_parcel' => 'Cannot cancel a processed parcel',
 ];

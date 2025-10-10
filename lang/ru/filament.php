@@ -337,4 +337,11 @@ return [
     'until_filter' => 'До: ',
     'no_three_day_parcels_found' => 'Посылки за 3 дня не найдены',
     'no_three_day_parcels_description' => 'Нет посылок, введенных за последние 3 дня и не импортированных из Китая.',
+
+    // Cancel Action
+    'cancel_parcel' => 'Отменить',
+    'cancel_parcel_confirmation' => 'Вы уверены, что хотите отменить эту посылку?',
+    'cancel_parcel_description' => 'Эта посылка будет отмечена как отмененная. Это действие нельзя отменить.',
+    'parcel_cancelled_successfully' => 'Посылка успешно отменена',
+    'cannot_cancel_processed_parcel' => 'Невозможно отменить обработанную посылку',
 ];

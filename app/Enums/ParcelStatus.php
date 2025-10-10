@@ -10,6 +10,7 @@ enum ParcelStatus: string
     case DISPATCHED = 'dispatched'; // Yo'lga chiqdi
     case ARRIVED_UZB = 'arrived_uzb';
     case DELIVERED = 'delivered';
+    case CANCELLED = 'cancelled';
 
     public function getLabel(?string $locale = null): string
     {
@@ -28,6 +29,7 @@ enum ParcelStatus: string
             self::ARRIVED_CHINA => 'info',
             self::ARRIVED_UZB => 'warning',
             self::DELIVERED => 'success',
+            self::CANCELLED => 'danger',
         };
     }
 }

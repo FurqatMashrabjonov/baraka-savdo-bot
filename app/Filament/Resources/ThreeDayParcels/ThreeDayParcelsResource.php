@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\ThreeDayParcels;
 
+use App\Enums\ParcelStatus;
 use App\Filament\Resources\ThreeDayParcels\Pages\ListThreeDayParcels;
 use App\Models\Parcel;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -45,6 +48,13 @@ class ThreeDayParcelsResource extends Resource
                 ->searchable()
                 ->copyable()
                 ->copyMessage(__('filament.track_number_copied'))
+                ->sortable(),
+
+            TextColumn::make('status')
+                ->label(__('filament.status'))
+                ->badge()
+                ->formatStateUsing(fn (ParcelStatus $state): string => $state->getLabel())
+                ->color(fn (ParcelStatus $state): string => $state->getColor())
                 ->sortable(),
 
             TextColumn::make('created_at')
@@ -160,6 +170,35 @@ class ThreeDayParcelsResource extends Resource
                     }),
             ])
             ->filtersFormColumns(2)
+            ->actions($isUzbKassir ? [
+                Action::make('cancel')
+                    ->label(__('filament.cancel_parcel'))
+                    ->icon(Heroicon::OutlinedXCircle)
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(__('filament.cancel_parcel_confirmation'))
+                    ->modalDescription(__('filament.cancel_parcel_description'))
+                    ->visible(fn (Parcel $record): bool => $record->status === ParcelStatus::CREATED)
+                    ->action(function (Parcel $record) {
+                        // Only allow cancelling if parcel is still in CREATED status
+                        if ($record->status !== ParcelStatus::CREATED) {
+                            Notification::make()
+                                ->title(__('filament.cannot_cancel_processed_parcel'))
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->status = ParcelStatus::CANCELLED;
+                        $record->save();
+
+                        Notification::make()
+                            ->title(__('filament.parcel_cancelled_successfully'))
+                            ->success()
+                            ->send();
+                    }),
+            ] : [])
             ->modifyQueryUsing(fn ($query) => $query
                 ->whereNull('china_uploaded_at') // Not imported from China Excel
                 ->whereNotNull('client_id') // Client has added track number
