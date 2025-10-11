@@ -203,6 +203,14 @@ class ThreeDayParcelsResource extends Resource
                 ->whereNull('china_uploaded_at') // Not imported from China Excel
                 ->whereNotNull('client_id') // Client has added track number
                 ->where('created_at', '<=', now()->subDays(3)) // 3 or more days ago
+                ->where(function ($query) {
+                    // Either not cancelled, or cancelled within the last day
+                    $query->where('status', '!=', ParcelStatus::CANCELLED->value)
+                        ->orWhere(function ($query) {
+                            $query->where('status', '=', ParcelStatus::CANCELLED->value)
+                                ->where('updated_at', '>=', now()->subDay());
+                        });
+                })
                 ->with('client')
             )
             ->defaultSort('created_at', 'desc')
