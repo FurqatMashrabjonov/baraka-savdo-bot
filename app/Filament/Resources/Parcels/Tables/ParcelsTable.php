@@ -39,12 +39,66 @@ class ParcelsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('client.id')
+                    ->label(__('filament.client_id'))
+                    ->sortable()
+                    ->searchable()
+                    ->placeholder(__('filament.unassigned'))
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
+
                 TextColumn::make('client.full_name')
                     ->label(__('filament.client_name'))
                     ->searchable()
                     ->placeholder(__('filament.unassigned'))
-                    ->description(fn ($record) => $record->client?->phone)
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
+
+                TextColumn::make('client.phone')
+                    ->label(__('filament.phone'))
+                    ->searchable()
+                    ->placeholder(__('filament.unassigned'))
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
 
                 TextColumn::make('track_number')
                     ->label(__('filament.track_number'))
@@ -59,7 +113,43 @@ class ParcelsTable
 
                 ToggleColumn::make('is_banned')
                     ->label(__('filament.is_banned'))
-                    ->toggleable(),
+                    ->toggleable()
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return true;
+                        }
+
+                        // Hide toggle for UZB kassirs
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return ! $hasKassirUzbRole;
+                    }),
+
+                TextColumn::make('is_banned')
+                    ->label(__('filament.is_banned'))
+                    ->formatStateUsing(fn (bool $state): string => $state ? '🚫' : '✅')
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        // Show icon for UZB kassirs only
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
 
                 TextColumn::make('china_uploaded_at')
                     ->label(__('filament.china_uploaded_at'))
@@ -69,10 +159,12 @@ class ParcelsTable
 
                 BadgeColumn::make('prepayment_status')
                     ->label("Oldindan to'lov")
-                    ->formatStateUsing(fn (PrepaymentStatus $state) => $state->getLabel())
-                    ->color(fn (PrepaymentStatus $state): string => match ($state) {
+                    ->formatStateUsing(fn (?PrepaymentStatus $state) => $state?->getLabel() ?? '')
+                    ->placeholder('—')
+                    ->color(fn (?PrepaymentStatus $state): string => match ($state) {
                         PrepaymentStatus::PENDING => 'warning',
                         PrepaymentStatus::PAID => 'success',
+                        null => 'gray',
                         default => 'gray',
                     })
                     ->action(
@@ -84,8 +176,8 @@ class ParcelsTable
                                         PrepaymentStatus::PENDING->value => PrepaymentStatus::PENDING->getLabel(),
                                         PrepaymentStatus::PAID->value => PrepaymentStatus::PAID->getLabel(),
                                     ])
-                                    ->required()
-                                    ->default(fn ($record) => $record->prepayment_status->value),
+                                    ->nullable()
+                                    ->default(fn ($record) => $record->prepayment_status?->value),
                             ])
                             ->action(function (array $data, $record): void {
                                 $record->update([
@@ -119,7 +211,21 @@ class ParcelsTable
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->placeholder(__('filament.not_set'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
 
                 TextColumn::make('payment_status')
                     ->label(__('filament.payment_status'))
@@ -232,6 +338,7 @@ class ParcelsTable
                         ParcelStatus::IN_WAREHOUSE => 'Omborda',
                         ParcelStatus::DISPATCHED => "Yo'lga chiqdi",
                         ParcelStatus::ARRIVED_UZB => __('filament.status_arrived_uzb'),
+                        ParcelStatus::PAYMENT_RECEIVED => "To'lov qabul qilindi",
                         ParcelStatus::DELIVERED => __('filament.status_delivered'),
                         default => $state->getLabel(),
                     })
@@ -241,6 +348,7 @@ class ParcelsTable
                         ParcelStatus::IN_WAREHOUSE => 'primary',
                         ParcelStatus::DISPATCHED => 'success',
                         ParcelStatus::ARRIVED_UZB => 'warning',
+                        ParcelStatus::PAYMENT_RECEIVED => 'success',
                         ParcelStatus::DELIVERED => 'danger',
                         default => 'gray',
                     })
@@ -266,6 +374,21 @@ class ParcelsTable
                                                     ParcelStatus::DISPATCHED->value => "Yo'lga chiqdi",
                                                 ];
                                             }
+
+                                            $hasKassirUzbRole = DB::table('model_has_roles')
+                                                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                                                ->where('model_has_roles.model_id', $user->id)
+                                                ->where('model_has_roles.model_type', get_class($user))
+                                                ->where('roles.name', 'kassir_uzb')
+                                                ->exists();
+
+                                            if ($hasKassirUzbRole) {
+                                                // Only ARRIVED_UZB and PAYMENT_RECEIVED for UZB kassirs
+                                                return [
+                                                    ParcelStatus::ARRIVED_UZB->value => __('filament.status_arrived_uzb'),
+                                                    ParcelStatus::PAYMENT_RECEIVED->value => "To'lov qabul qilindi",
+                                                ];
+                                            }
                                         }
 
                                         // All statuses for other users
@@ -275,6 +398,7 @@ class ParcelsTable
                                             ParcelStatus::IN_WAREHOUSE->value => 'Omborda',
                                             ParcelStatus::DISPATCHED->value => "Yo'lga chiqdi",
                                             ParcelStatus::ARRIVED_UZB->value => __('filament.status_arrived_uzb'),
+                                            ParcelStatus::PAYMENT_RECEIVED->value => "To'lov qabul qilindi",
                                             ParcelStatus::DELIVERED->value => __('filament.status_delivered'),
                                         ];
                                     })
@@ -321,28 +445,27 @@ class ParcelsTable
                     ->options([
                         ParcelStatus::CREATED->value => __('filament.status_created'),
                         ParcelStatus::ARRIVED_CHINA->value => __('filament.status_arrived_china'),
+                        ParcelStatus::IN_WAREHOUSE->value => 'Omborda',
+                        ParcelStatus::DISPATCHED->value => "Yo'lga chiqdi",
                         ParcelStatus::ARRIVED_UZB->value => __('filament.status_arrived_uzb'),
+                        ParcelStatus::PAYMENT_RECEIVED->value => "To'lov qabul qilindi",
                         ParcelStatus::DELIVERED->value => __('filament.status_delivered'),
                     ])
                     ->multiple(),
 
-                SelectFilter::make('client')
-                    ->label(__('filament.filter_by_client'))
-                    ->relationship('client', 'full_name')
-                    ->searchable()
+                SelectFilter::make('prepayment_status')
+                    ->label("Oldindan to'lov")
+                    ->options([
+                        PrepaymentStatus::PENDING->value => PrepaymentStatus::PENDING->getLabel(),
+                        PrepaymentStatus::PAID->value => PrepaymentStatus::PAID->getLabel(),
+                    ])
                     ->multiple()
-                    ->preload(false)
-                    ->optionsLimit(50),
-            ])
-            ->recordActions([
-                EditAction::make()
                     ->visible(function () {
                         $user = Auth::user();
                         if (! $user) {
                             return false;
                         }
 
-                        // Hide edit button for China kassirs
                         $hasKassirChinaRole = DB::table('model_has_roles')
                             ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
                             ->where('model_has_roles.model_id', $user->id)
@@ -350,8 +473,51 @@ class ParcelsTable
                             ->where('roles.name', 'kassir_china')
                             ->exists();
 
-                        return ! $hasKassirChinaRole;
+                        return $hasKassirChinaRole;
                     }),
+
+                Filter::make('arrived_uzb_not_paid')
+                    ->label("O'zbekistonga kelgan, to'lov qabul qilinmagan")
+                    ->query(fn (Builder $query): Builder => $query
+                        ->where('status', ParcelStatus::ARRIVED_UZB->value)
+                        ->whereNotNull('uzb_uploaded_at'))
+                    ->toggle()
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    }),
+
+                SelectFilter::make('client')
+                    ->label(__('filament.filter_by_client'))
+                    ->relationship('client', 'full_name')
+                    ->searchable()
+                    ->multiple()
+                    ->preload(false)
+                    ->optionsLimit(50)
+                    ->getSearchResultsUsing(function (string $search) {
+                        return \App\Models\Client::query()
+                            ->where('full_name', 'like', "%{$search}%")
+                            ->orWhere('id', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%")
+                            ->limit(50)
+                            ->pluck('full_name', 'id');
+                    })
+                    ->getOptionLabelUsing(fn ($value): ?string => \App\Models\Client::find($value)?->full_name),
+            ])
+            ->recordActions([
+                EditAction::make()
+                    ->visible(false),
 
                 Action::make('mark_dispatched')
                     ->label("Yo'lga chiqdi deb belgilash")
@@ -373,7 +539,11 @@ class ParcelsTable
                             ->where('roles.name', 'kassir_china')
                             ->exists();
 
-                        return $hasKassirChinaRole && $record->status === ParcelStatus::IN_WAREHOUSE;
+                        // Only show if user is kassir_china, parcel is in warehouse,
+                        // and prepayment status is PAID or PENDING
+                        return $hasKassirChinaRole
+                            && $record->status === ParcelStatus::IN_WAREHOUSE
+                            && in_array($record->prepayment_status, [PrepaymentStatus::PAID, PrepaymentStatus::PENDING]);
                     })
                     ->action(function ($record) {
                         $record->update([
@@ -673,6 +843,21 @@ class ParcelsTable
                     ->label(__('filament.import_china'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('info')
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirChinaRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_china')
+                            ->exists();
+
+                        return $hasKassirChinaRole;
+                    })
                     ->form([
                         FileUpload::make('china_excel_file')
                             ->label(__('filament.china_excel_file'))
@@ -721,9 +906,117 @@ class ParcelsTable
                     })
                     ->modalSubmitActionLabel(__('filament.import_action'))
                     ->modalHeading(__('filament.import_china_modal_title')),
+
+                Action::make('import_uzb')
+                    ->label("O'zbekistonga yetib keldi")
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->visible(function () {
+                        $user = Auth::user();
+                        if (! $user) {
+                            return false;
+                        }
+
+                        $hasKassirUzbRole = DB::table('model_has_roles')
+                            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                            ->where('model_has_roles.model_id', $user->id)
+                            ->where('model_has_roles.model_type', get_class($user))
+                            ->where('roles.name', 'kassir_uzb')
+                            ->exists();
+
+                        return $hasKassirUzbRole;
+                    })
+                    ->form([
+                        FileUpload::make('uzb_excel_file')
+                            ->label('Excel fayl')
+                            ->required()
+                            ->helperText("Faqat trek raqamlarini o'z ichiga olgan Excel faylni yuklang. Fayl birinchi ustunda trek raqamlarini o'z ichiga olishi kerak.")
+                            ->disk('public')
+                            ->directory('imports')
+                            ->maxSize(10240) // 10MB max
+                            ->uploadProgressIndicatorPosition('left')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left'),
+                    ])
+                    ->action(function (array $data) {
+                        $importService = app(\App\Services\ParcelImportService::class);
+
+                        try {
+                            // The file is stored in public/imports directory
+                            $filePath = storage_path('app/public/'.$data['uzb_excel_file']);
+
+                            // Check if file exists
+                            if (! file_exists($filePath)) {
+                                throw new \Exception('Fayl topilmadi: '.$filePath);
+                            }
+
+                            $result = $importService->importUzbekistanExcel($filePath);
+
+                            $summary = $importService->getImportSummary($result, 'uzb');
+
+                            Notification::make()
+                                ->title('Muvaffaqiyatli yuklandi')
+                                ->body($summary)
+                                ->success()
+                                ->send();
+
+                            // Clean up the uploaded file after processing
+                            if (file_exists($filePath)) {
+                                unlink($filePath);
+                            }
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Xatolik')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    })
+                    ->modalSubmitActionLabel('Yuklash')
+                    ->modalHeading("O'zbekistonga yetib kelgan parsellarni yuklash"),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('mark_prepayment_pending')
+                        ->label("Oldindan to'lovni belgilash")
+                        ->icon('heroicon-o-banknotes')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->modalHeading("Oldindan to'lovni belgilash")
+                        ->modalDescription("Tanlangan parsellar uchun oldindan to'lov kutilmoqda deb belgilansinmi?")
+                        ->deselectRecordsAfterCompletion()
+                        ->visible(function () {
+                            $user = Auth::user();
+                            if (! $user) {
+                                return false;
+                            }
+
+                            $hasKassirChinaRole = DB::table('model_has_roles')
+                                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                                ->where('model_has_roles.model_id', $user->id)
+                                ->where('model_has_roles.model_type', get_class($user))
+                                ->where('roles.name', 'kassir_china')
+                                ->exists();
+
+                            return $hasKassirChinaRole;
+                        })
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $successCount = 0;
+
+                            foreach ($records as $parcel) {
+                                $parcel->update([
+                                    'prepayment_status' => PrepaymentStatus::PENDING,
+                                ]);
+                                $successCount++;
+                            }
+
+                            Notification::make()
+                                ->title('Muvaffaqiyatli yangilandi')
+                                ->body("{$successCount} ta parsel uchun oldindan to'lov kutilmoqda deb belgilandi")
+                                ->success()
+                                ->send();
+                        }),
+
                     BulkAction::make('bulk_payment')
                         ->label(__('filament.bulk_payment'))
                         ->icon('heroicon-o-currency-dollar')

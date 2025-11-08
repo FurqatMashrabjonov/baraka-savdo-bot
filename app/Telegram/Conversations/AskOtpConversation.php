@@ -43,7 +43,7 @@ class AskOtpConversation extends Conversation
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.greeting'),
-                reply_markup: \App\Telegram\Keyboards\ReplyKeyboards::home()
+                reply_markup: \App\Telegram\Keyboards\ReplyKeyboards::home($client)
             );
 
             return;

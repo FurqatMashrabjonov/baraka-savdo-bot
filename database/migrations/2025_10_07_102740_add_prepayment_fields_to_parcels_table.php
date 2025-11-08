@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('parcels', function (Blueprint $table) {
-            $table->string('prepayment_status')->default('pending')->after('payment_notes');
+            $table->string('prepayment_status')->nullable()->after('payment_notes');
         });
     }
 

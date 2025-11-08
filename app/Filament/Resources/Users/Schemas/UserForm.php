@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserForm
@@ -62,26 +60,8 @@ class UserForm
                             ->label(__('filament.roles'))
                             ->multiple()
                             ->relationship('roles', 'name')
-                            ->options(Role::all()->pluck('name', 'name'))
-                            ->preload()
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                // Auto-select permissions based on role
-                                if (in_array('admin', $state ?? [])) {
-                                    $set('permissions', Permission::all()->pluck('name')->toArray());
-                                } elseif (in_array('kassir_china', $state ?? [])) {
-                                    $set('permissions', ['import_china_excel', 'make_payments']);
-                                } elseif (in_array('kassir_uzb', $state ?? [])) {
-                                    $set('permissions', ['import_uzb_excel', 'make_payments']);
-                                }
-                            }),
-
-                        CheckboxList::make('permissions')
-                            ->label(__('filament.permissions'))
-                            ->relationship('permissions', 'name')
-                            ->options(Permission::all()->pluck('name', 'name'))
-                            ->columns(2)
-                            ->searchable(),
+                            ->options(Role::all()->pluck('name', 'id'))
+                            ->preload(),
                     ]),
             ]);
     }

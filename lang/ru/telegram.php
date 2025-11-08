@@ -75,7 +75,10 @@ return [
     'parcel_statuses' => [
         'created' => 'Создан',
         'arrived_china' => 'Прибыл в Китай',
+        'in_warehouse' => 'На складе',
+        'dispatched' => 'Отправлен',
         'arrived_uzb' => 'Прибыл в Узбекистан',
+        'payment_received' => 'Оплата получена',
         'delivered' => 'Доставлен',
         'cancelled' => 'Отменен',
     ],

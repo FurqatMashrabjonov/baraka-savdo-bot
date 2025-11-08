@@ -17,11 +17,22 @@ class ReplyKeyboards
 
     public static function home($client = null)
     {
-        // Create Order Payment button with WebApp if client is available
-        return ReplyKeyboardMarkup::make(resize_keyboard: true)->addRow(
-            KeyboardButton::make(__('telegram.track_number')),
-            KeyboardButton::make(__('telegram.order_payment'), web_app: WebAppInfo::make(url('/telegram-web-app/dashboard?uid='.$client->uid))),
-        )->addRow(
+        $keyboard = ReplyKeyboardMarkup::make(resize_keyboard: true);
+
+        // First row: Track number and Order Payment (with WebApp if client has uid)
+        if ($client && $client->uid) {
+            $keyboard->addRow(
+                KeyboardButton::make(__('telegram.track_number')),
+                KeyboardButton::make(__('telegram.order_payment'), web_app: WebAppInfo::make(url('/telegram-web-app/dashboard?uid='.$client->uid))),
+            );
+        } else {
+            $keyboard->addRow(
+                KeyboardButton::make(__('telegram.track_number')),
+                KeyboardButton::make(__('telegram.order_payment')),
+            );
+        }
+
+        return $keyboard->addRow(
             KeyboardButton::make(__('telegram.delivery_address')),
             KeyboardButton::make(__('telegram.china_address')),
         )->addRow(

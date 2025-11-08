@@ -21,18 +21,12 @@ class CustomDashboard extends BaseDashboard
             return [
                 \App\Filament\Widgets\KassirStatsWidget::class,
                 \App\Filament\Widgets\ThreeDayParcelsWidget::class,
-                \App\Filament\Widgets\KassirRecentPaymentsWidget::class,
             ];
         }
 
-        // Admin widgets (existing ones)
+        // Admin widgets - only most essential
         return [
             \App\Filament\Widgets\ParcelStatsWidget::class,
-            \App\Filament\Widgets\ThreeDayParcelsWidget::class,
-            \App\Filament\Widgets\ClientStatsWidget::class,
-            \App\Filament\Widgets\ParcelStatusDistributionWidget::class,
-            \App\Filament\Widgets\ParcelActivityChartWidget::class,
-            \App\Filament\Widgets\RecentParcelsWidget::class,
         ];
     }
 }

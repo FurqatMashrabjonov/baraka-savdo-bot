@@ -25,20 +25,22 @@ class FeedbackConversation extends Conversation
     {
         $message = $bot->message()->text;
 
+        // Get telegram account and client
+        $telegramAccount = TelegramAccount::where('chat_id', $bot->chatId())->first();
+        $client = $telegramAccount?->client;
+
         // Check if user wants to go back to home
         if (in_array($message, lang_all('telegram.back_to_home'))) {
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.back_to_home_message'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
 
             return;
         }
 
         // Store feedback in database
-        $telegramAccount = TelegramAccount::where('chat_id', $bot->chatId())->first();
-
         if ($telegramAccount) {
             Feedback::create([
                 'telegram_account_id' => $telegramAccount->id,
@@ -49,13 +51,13 @@ class FeedbackConversation extends Conversation
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.feedback_texts.received'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
         } else {
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.error_try_again'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
         }
     }

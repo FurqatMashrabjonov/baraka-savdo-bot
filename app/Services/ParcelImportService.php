@@ -19,6 +19,7 @@ class ParcelImportService
             'processed' => 0,
             'created' => 0,
             'updated' => 0,
+            'skipped' => 0,
             'errors' => [],
         ];
 
@@ -52,16 +53,22 @@ class ParcelImportService
                             $parcel = Parcel::where('track_number', $trackNumber)->lockForUpdate()->first();
 
                             if ($parcel) {
-                                $parcel->weight = $weight;
-                                $parcel->is_banned = $isBanned;
-                                $parcel->china_uploaded_at = now();
+                                // Only update if china_uploaded_at is not already set
+                                if (is_null($parcel->china_uploaded_at)) {
+                                    $parcel->weight = $weight;
+                                    $parcel->is_banned = $isBanned;
+                                    $parcel->china_uploaded_at = now();
 
-                                if ($parcel->status === ParcelStatus::CREATED) {
-                                    $parcel->status = ParcelStatus::IN_WAREHOUSE; // Omborda
+                                    if ($parcel->status === ParcelStatus::CREATED) {
+                                        $parcel->status = ParcelStatus::IN_WAREHOUSE; // Omborda
+                                    }
+
+                                    $parcel->save();
+                                    $results['updated']++;
+                                } else {
+                                    // Skip if already has china_uploaded_at
+                                    $results['skipped']++;
                                 }
-
-                                $parcel->save();
-                                $results['updated']++;
                             } else {
                                 $batch[] = [
                                     'track_number' => $trackNumber,
@@ -100,6 +107,7 @@ class ParcelImportService
         $results = [
             'processed' => 0,
             'updated' => 0,
+            'skipped' => 0,
             'not_found' => 0,
             'errors' => [],
         ];
@@ -130,14 +138,16 @@ class ParcelImportService
                             $parcel = Parcel::where('track_number', $trackNumber)->lockForUpdate()->first();
 
                             if ($parcel) {
-                                $parcel->uzb_uploaded_at = now();
-
-                                if ($parcel->status === ParcelStatus::ARRIVED_CHINA) {
+                                // Only update if uzb_uploaded_at is not already set
+                                if (is_null($parcel->uzb_uploaded_at)) {
+                                    $parcel->uzb_uploaded_at = now();
                                     $parcel->status = ParcelStatus::ARRIVED_UZB;
+                                    $parcel->save();
+                                    $results['updated']++;
+                                } else {
+                                    // Skip if already has uzb_uploaded_at
+                                    $results['skipped']++;
                                 }
-
-                                $parcel->save();
-                                $results['updated']++;
                             } else {
                                 $results['not_found']++;
                                 $results['errors'][] = "Trek raqami topilmadi: {$trackNumber}";
@@ -163,7 +173,8 @@ class ParcelImportService
         if ($type === 'china') {
             $summary = "Jami qayta ishlangan: {$results['processed']}\n";
             $summary .= "Yangi yaratilgan: {$results['created']}\n";
-            $summary .= "Yangilangan: {$results['updated']}";
+            $summary .= "Yangilangan: {$results['updated']}\n";
+            $summary .= "O'tkazib yuborilgan (allaqachon yuklangan): {$results['skipped']}";
 
             if (! empty($results['errors'])) {
                 $summary .= "\n\nXatolar:\n".implode("\n", array_slice($results['errors'], 0, 5));
@@ -174,6 +185,7 @@ class ParcelImportService
         } else {
             $summary = "Jami qayta ishlangan: {$results['processed']}\n";
             $summary .= "Yangilangan: {$results['updated']}\n";
+            $summary .= "O'tkazib yuborilgan (allaqachon yuklangan): {$results['skipped']}\n";
             $summary .= "Topilmagan: {$results['not_found']}";
 
             if (! empty($results['errors'])) {

@@ -167,7 +167,9 @@ class Parcel extends Model
      */
     public function isReadyForPayment(): bool
     {
-        return $this->status === ParcelStatus::ARRIVED_UZB && $this->payment_status === 'pending';
+        return $this->status === ParcelStatus::ARRIVED_UZB
+            && $this->payment_status === 'pending'
+            && ! $this->is_banned;
     }
 
     /**
@@ -190,6 +192,7 @@ class Parcel extends Model
             'exchange_rate' => $exchangeRate,
             'processed_by' => $processedBy?->id ?? auth()->id(),
             'payment_processed_by' => $processedBy?->id ?? auth()->id(),
+            'status' => \App\Enums\ParcelStatus::PAYMENT_RECEIVED,
         ]);
 
         return true;

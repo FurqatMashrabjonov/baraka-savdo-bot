@@ -34,12 +34,15 @@ class TrackNumberConversation extends Conversation
     {
         $trackNumber = trim($bot->message()->text);
 
+        // Get current client early to use in all responses
+        $client = $this->authService()->getClientByChatId($bot->chatId());
+
         // Check if user wants to go back to home
         if (in_array($trackNumber, lang_all('telegram.back_to_home'))) {
             $this->end();
             $bot->sendMessage(
                 text: __('telegram.back_to_home_message'),
-                reply_markup: ReplyKeyboards::home()
+                reply_markup: ReplyKeyboards::home($client)
             );
 
             return;
@@ -51,9 +54,6 @@ class TrackNumberConversation extends Conversation
 
             return;
         }
-
-        // Get current client
-        $client = $this->authService()->getClientByChatId($bot->chatId());
 
         if (! $client) {
             $this->end();
@@ -76,7 +76,7 @@ class TrackNumberConversation extends Conversation
                 $bot->sendMessage(
                     text: __('telegram.track_number_texts.order_created', ['track_number' => $trackNumber]),
                     parse_mode: ParseMode::HTML,
-                    reply_markup: ReplyKeyboards::home()
+                    reply_markup: ReplyKeyboards::home($client)
                 );
             }
             // If parcel belongs to current client, show already exists message
@@ -84,14 +84,14 @@ class TrackNumberConversation extends Conversation
                 $bot->sendMessage(
                     text: __('telegram.track_number_texts.already_exists'),
                     parse_mode: ParseMode::HTML,
-                    reply_markup: ReplyKeyboards::home()
+                    reply_markup: ReplyKeyboards::home($client)
                 );
             } else {
                 // If parcel belongs to another client, show error message
                 $bot->sendMessage(
                     text: __('telegram.track_number_texts.taken'),
                     parse_mode: ParseMode::HTML,
-                    reply_markup: ReplyKeyboards::home()
+                    reply_markup: ReplyKeyboards::home($client)
                 );
             }
             $this->end();
@@ -109,7 +109,7 @@ class TrackNumberConversation extends Conversation
         $bot->sendMessage(
             text: __('telegram.track_number_texts.order_created', ['track_number' => $trackNumber]),
             parse_mode: ParseMode::HTML,
-            reply_markup: ReplyKeyboards::home()
+            reply_markup: ReplyKeyboards::home($client)
         );
 
         $this->end();
